@@ -1,0 +1,363 @@
+{% extends 'priemka/priemka_base.html' %}
+{% load static %}
+
+{% block header-css %} <!-- Для css -->
+
+<link type="text/css" href="{% static 'css/priemka_appointment_details.css' %}" rel="stylesheet">
+<link type="text/css" href="{% static 'css/priemka_lc_navbar.css' %}" rel="stylesheet">
+<link type="text/css" href="{% static 'css/cards.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .button.disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+
+    .updated-by {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .updated-by .title {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .updated-by .text {
+        color: #555;
+    }
+</style>
+
+{% endblock %}
+
+{% block title %}Детали решения{% endblock title %} <!-- Заголовок страницы -->
+
+
+{% block content %}
+
+<div class="wrapper">
+    <div class="wrap">
+        <div class="lc-block">
+            <div class="lc-nav sidebar col-md-3 p-0">
+                {% include 'priemka/inc/lc_nav.html' %}
+            </div>
+            <div class="block-list col-md-7 col-lg-10 px-md-4">
+                <div class="block-list-top">
+                    <div class="block-list-title">
+                        Подробнее о решении
+                    </div>
+                    <div class="block-list-controls">
+                        <div class="back-btn-container">
+                            {% if request.user.role.id == 3 %}
+                            <a href="{% url 'priemka_lc_decisions_deputy_page' %}" class="button back-btn">
+                                <i class="bi bi-arrow-left"></i> Назад к решениям
+                            </a>
+                            {% else %}
+                            <a href="{% url 'priemka_lc_decisions_page' %}" class="button back-btn">
+                                <i class="bi bi-arrow-left"></i> Назад к решениям
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="block-list-items" id="details-container">
+                    {% if decision %}
+
+                    {% if decision.is_final %}
+                    <div class="decision-isfinal">
+                        <div class="title">Окончательное</div>
+                    </div>
+                    {% else %}
+                    <div class="decision-isnotfinal">                        
+                        <div class="title">Не окончательное</div>
+                    </div>
+                    {% endif %}
+
+                    <div class="appointment-card">
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <ul>
+                                {% for field in form %}
+                                {% for error in field.errors %}
+                                <li>{{ field.label }}: {{ error }}</li>
+                                {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        {% if error %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                        {% endif %}
+                        <div class="top">
+                            <div class="left-block">
+                                <div class="title">
+                                    Решение по вопросу посетителя {{ decision.appointment.user.last_name }} {{ decision.appointment.user.first_name }} {{ decision.appointment.user.patronymic_name }}
+                                </div>
+                                <div class="deputy-position">
+                                    От {{ decision.appointment.appointed_date|date:"d.m.Y" }} {{ decision.appointment.appointed_time|date:"H:i" }}
+                                </div>
+                            </div>
+                            <div class="right-block">
+                                <div class="status">
+                                    {% if decision.status.id == 1 %}
+                                    <i class="bi bi-circle-fill status-processing"></i>
+                                    {% elif decision.status.id == 2 %}
+                                    <i class="bi bi-circle-fill status-accepted"></i>
+                                    {% elif decision.status.id == 3 %}
+                                    <i class="bi bi-circle-fill status-inwork"></i>
+                                    {% elif decision.status.id == 4 %}
+                                    <i class="bi bi-circle-fill status-done"></i>
+                                    {% elif decision.status.id == 5 %}
+                                    <i class="bi bi-circle-fill status-declined"></i>
+                                    {% endif %}
+                                    {{ decision.status }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="appointment-info">
+                            <div class="author">
+                                <div class="title">Посетитель:</div>
+                                <div class="text">{{ decision.appointment.user.last_name }} {{ decision.appointment.user.first_name }} {{ decision.appointment.user.patronymic_name }}</div>
+                            </div>
+                            <div class="theme">
+                                <div class="title">Тема:</div>
+                                <div class="text">{{ decision.appointment.appointment_theme }}</div>
+                            </div>
+                            <div class="appointment-title">
+                                <div class="title">Вопрос:</div>
+                                <div class="text">{{ decision.appointment.title }}</div>
+                            </div>
+                            <div class="appointment-title">
+                                <div class="title">Решение:</div>
+                                <div class="text">{{ decision.decision_text }}</div>
+                            </div>
+                            <div class="author">
+                                <div class="title">Депутат вынесший решение:</div>
+                                <div class="text">{{ decision.deputy.last_name }} {{ decision.deputy.first_name }} {{ decision.deputy.patronymic_name }}</div>
+                            </div>
+                            
+
+                            <hr>
+                            <div class="bottom">
+                                <div class="meta">
+                                    <div class="appointment-creation-date">
+                                        <div class="text">
+                                            Решение создано: {{ decision.created_at|date:"H:i d.m.Y" }}
+                                        </div>
+                                    </div>
+                                    {% if decision.updated_at %}
+                                    <div class="appointment-update-date">
+                                        <div class="text">
+                                            Изменено: {{ decision.updated_at|date:"H:i d.m.Y" }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="btns-block">
+                                    <div class="btns">
+                                        {% if request.user.role.id == 3 %}
+
+                                            {% if can_edit %}
+                                                <button class="button final-btn" onclick="openFinishModal()">Окончательное решение</button>
+                                                <button class="button edit-btn" onclick="openEditModal()">Изменить</button>
+                                            {% else %}
+                                                {% if decision.status.id == 1 %}
+                                                    <button class="button register-btn" onclick="openAcceptModal()">Принять</button>
+                                                    <button class="button decline-btn" onclick="openDeclineModal()">Отклонить</button>
+                                                {% elif decision.status.id == 2 %}
+                                                    <button class="button inwork-btn" onclick="openWorkModal()">В работу</button>
+                                                    <button class="button decline-btn" onclick="openDeclineModal()">Отклонить</button>
+                                                {% elif decision.status.id == 3 %}
+                                                    <button class="button final-btn" onclick="openDoneModal()">Выполнить</button>
+                                                {% else %}
+                                                    
+                                                {% endif %}  
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+
+
+                        </div>
+                    </div>
+
+                    <!-- Модальное окно для принятия -->
+                    <div id="acceptModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeAcceptModal()">×</span>
+                            <h3>Принятие решения</h3>
+                            <form method="post" id="accept-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="accept_decision" value="1">
+                                <button type="submit" class="btn btn-primary">Да, принять</button>
+                                <button type="button" class="btn btn-secondary"
+                                    onclick="closeAcceptModal()">Отмена</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Модальное окно для "В работу" -->
+                    <div id="workModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeWorkModal()">×</span>
+                            <h3>Взять в работу</h3>
+                            <form method="post" id="work-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="work_decision" value="1">
+                                <button type="submit" class="btn btn-primary">Да, взять в работу</button>
+                                <button type="button" class="btn btn-secondary"
+                                    onclick="closeWorkModal()">Отмена</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Модальное окно для завершения (окончательное) -->
+                    <div id="finishModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeFinishModal()">×</span>
+                            <h3>Сделать решение окончательным</h3>
+                            <form method="post" id="finish-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="finish_decision" value="1">
+                                <button type="submit" class="btn btn-primary">Да, сделать окончательным</button>
+                                <button type="button" class="btn btn-secondary"
+                                    onclick="closeFinishModal()">Отмена</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Модальное окно для выполнения -->
+                    <div id="doneModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeDoneModal()">×</span>
+                            <h3>Выполнить решение</h3>
+                            <form method="post" id="finish-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="done_decision" value="1">
+                                <button type="submit" class="btn btn-primary">Да, сделать выполненным</button>
+                                <button type="button" class="btn btn-secondary"
+                                    onclick="closeFinishModal()">Отмена</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Модальное окно для отклонения -->
+                    <div id="declineModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeDeclineModal()">×</span>
+                            <h3>Отклонение решения</h3>
+                            <form method="post" id="decline-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="decline_decision" value="1">
+                                <button type="submit" class="btn btn-danger">Да, отклонить</button>
+                                <button type="button" class="btn btn-secondary"
+                                    onclick="closeDeclineModal()">Отмена</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Модальное окно для редактирования -->
+                    <div id="editModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" onclick="closeEditModal()">×</span>
+                            <h3>Изменение решения</h3>
+                            <form method="post" id="edit-form">
+                                {% csrf_token %}
+                                <input type="hidden" name="edit_decision" value="1">
+                                <div class="form-group">
+                                    {{ form.decision_text.label_tag }}
+                                    {{ form.decision_text }}
+                                </div>
+                                {% if error %}
+                                <div class="alert alert-danger">{{ error }}</div>
+                                {% endif %}
+                                <button type="submit" class="btn btn-primary">Сохранить</button>
+                                <button type="button" class="btn btn-secondary"
+                                    onclick="closeEditModal()">Отмена</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    {% else %}
+                    <div class="no-appointments-banner">
+                        <div class="banner">
+                            <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10.5 15L13.5 12M13.5 15L10.5 12" stroke="#1C274C" stroke-width="1.5"
+                                    stroke-linecap="round" />
+                                <path
+                                    d="M22 11.7979C22 9.16554 22 7.84935 21.2305 6.99383C21.1598 6.91514 21.0849 6.84024 21.0062 6.76946C20.1506 6 18.8345 6 16.2021 6H15.8284C14.6747 6 14.0979 6 13.5604 5.84678C13.2651 5.7626 12.9804 5.64471 12.7121 5.49543C12.2237 5.22367 11.8158 4.81578 11 4L10.4497 3.44975C10.1763 3.17633 10.0396 3.03961 9.89594 2.92051C9.27652 2.40704 8.51665 2.09229 7.71557 2.01738C7.52976 2 7.33642 2 6.94975 2C6.06722 2 5.62595 2 5.25839 2.06935C3.64031 2.37464 2.37464 3.64031 2.06935 5.25839C2 5.62595 2 6.06722 2 6.94975M21.9913 16C21.9554 18.4796 21.7715 19.8853 20.8284 20.8284C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.8284C2 19.6569 2 17.7712 2 14V11"
+                                    stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <div class="title">
+                            Не удалось открыть детали записи
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<span id="deputy-id" style="display: none;">{{ appointment.deputy.id|json_script:"deputy-id" }}</span>
+
+<script id="deputy-id" type="application/json">{{ appointment.deputy.id|json_script:"deputy-id" }}</script>
+
+<script>
+    function openAcceptModal() { document.getElementById('acceptModal').style.display = 'block'; }
+    function closeAcceptModal() { document.getElementById('acceptModal').style.display = 'none'; }
+    function openWorkModal() { document.getElementById('workModal').style.display = 'block'; }
+    function closeWorkModal() { document.getElementById('workModal').style.display = 'none'; }
+    function openFinishModal() { document.getElementById('finishModal').style.display = 'block'; }
+    function closeFinishModal() { document.getElementById('finishModal').style.display = 'none'; }
+    function openDoneModal() { document.getElementById('doneModal').style.display = 'block'; }
+    function closeDoneModal() { document.getElementById('doneModal').style.display = 'none'; }
+    function openDeclineModal() { document.getElementById('declineModal').style.display = 'block'; }
+    function closeDeclineModal() { document.getElementById('declineModal').style.display = 'none'; }
+    function openEditModal() { document.getElementById('editModal').style.display = 'block'; }
+    function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
+
+
+</script>
+
+{% endblock %}

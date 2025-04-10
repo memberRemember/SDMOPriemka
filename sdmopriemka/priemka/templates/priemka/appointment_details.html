@@ -1,0 +1,385 @@
+{% extends 'priemka/priemka_base.html' %}
+{% load static %}
+
+{% block header-css %} <!-- Для css -->
+
+<link type="text/css" href="{% static 'css/priemka_appointment_details.css' %}" rel="stylesheet">
+<link type="text/css" href="{% static 'css/priemka_lc_navbar.css' %}" rel="stylesheet">
+<link type="text/css" href="{% static 'css/cards.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+        background-color: white;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+    }
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .button.disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }
+    .update-reason, .updated-by {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+
+    .update-reason .title, .updated-by .title {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .update-reason .text, .updated-by .text {
+        color: #555;
+    }
+</style>
+
+{% endblock %}
+
+{% block title %}Детали записи{% endblock title %} <!-- Заголовок страницы -->
+
+
+{% block content %}
+
+    <div class="wrapper">
+        <div class="wrap">
+            <div class="lc-block">
+                <div class="lc-nav sidebar col-md-3 p-0">
+                    {% include 'priemka/inc/lc_nav.html' %}
+                </div>
+                <div class="block-list col-md-7 col-lg-10 px-md-4">
+                    <div class="block-list-top">
+                        <div class="block-list-title">
+                            Подробнее о записи
+                        </div>
+                    </div>
+                    <div class="block-list-items" id="appointments-container">
+                        {% if appointment %}
+                        <div class="appointment-card">
+                            {% if form.errors %}
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        {% for field in form %}
+                                            {% for error in field.errors %}
+                                                <li>{{ field.label }}: {{ error }}</li>
+                                            {% endfor %}
+                                        {% endfor %}
+                                        {% for error in form.non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                            {% if error %}
+                                <div class="alert alert-danger">{{ error }}</div>
+                            {% endif %}
+                            <div class="top">
+                                <div class="left-block">
+                                    <div class="title">
+                                        №{{ appointment.id }} Запись на прием к {{ appointment.deputy.last_name }} {{ appointment.deputy.first_name }} {{ appointment.deputy.patronymic_name }}
+                                    </div>
+                                    <div class="deputy-position">
+                                        {{ appointment.deputy.position }}
+                                    </div>
+                                </div>
+                                <div class="right-block">
+                                    <div class="status">
+                                        {% if appointment.appointment_status.id == 1 %}
+                                        <i class="bi bi-circle-fill status-processing"></i>
+                                        {% elif appointment.appointment_status.id == 2 %}
+                                        <i class="bi bi-circle-fill status-registered"></i>
+                                        {% elif appointment.appointment_status.id == 3 %}
+                                        <i class="bi bi-circle-fill status-finished"></i>
+                                        {% elif appointment.appointment_status.id == 4 %}
+                                        <i class="bi bi-circle-fill status-canceled"></i>
+                                        {% elif appointment.appointment_status.id == 5 %}
+                                        <i class="bi bi-circle-fill status-declined"></i>
+                                        {% endif %}
+                                        {{ appointment.appointment_status }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="appointment-info">
+                                <div class="author">
+                                    <div class="title">Посетитель:</div>
+                                    <div class="text">{{ appointment.user.last_name }} {{ appointment.user.first_name }} {{ appointment.user.patronymic_name }}</div>
+                                </div>
+                                <div class="theme">
+                                    <div class="title">Тема приема:</div>
+                                    <div class="text">{{ appointment.appointment_theme }}</div>
+                                </div>
+                                <div class="appointment-title">
+                                    <div class="title">Заголовок:</div>
+                                    <div class="text">{{ appointment.title }}</div>
+                                </div>
+                                <div class="appointment-description">
+                                    <div class="title">Описание:</div>
+                                    <div class="text">{{ appointment.description }}</div>
+                                </div>
+                                <div class="appointed-date-block">
+                                    <div class="appointed-date-block-title">Прием назначен на:</div>
+                                    <div class="appointed-time">{{ appointment.appointed_time|time:"H:i" }}</div>
+                                    <div class="appointed-date">{{ appointment.appointed_date|date:"d.m.Y" }}</div>
+                                </div>
+
+                                <hr>
+
+                                <div class="bottom">
+                                    <div class="meta">
+                                        <div class="appointment-creation-date">
+                                            <div class="text">
+                                                Запись создана: {{ appointment.creation_date|date:"H:i d.m.Y" }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="btns-block">
+                                        <div class="btns">
+                                            {% if request.user.role.id == 0 %}
+                                                {% if appointment.appointment_status.id == 1 or appointment.appointment_status.id == 2 %}
+                                                    <button class="button move-btn" onclick="openMoveModal()">Перенести</button>
+    
+                                                    <button class="button cancel-btn" onclick="openCancelModal()">Отменить</button>
+                                                {% endif %}
+                                            {% elif request.user.role.id == 3 %}
+                                                {% if appointment.appointment_status.id == 1 or appointment.appointment_status.id == 2 %}
+                                                    <button class="button move-btn" onclick="openMoveModal()">Перенести</button>
+                                                    {% if appointment.appointment_status.id == 1 %}
+                                                        <button class="button register-btn" onclick="openRegisterModal()">Подтвердить</button>
+                                                        <button class="button decline-btn" onclick="openDeclineModal()">Отклонить</button>
+                                                    {% elif appointment.appointment_status.id == 2  %}
+                                                        <button class="button finish-btn" onclick="openFinishModal()">Завершить</button>
+                                                        <a href="{% url 'create_decision' appointment.id %}" class="button create-decision-btn">Вынести решение и завершить</a>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% else %}
+                                                {% if appointment.appointment_status.id == 1 or appointment.appointment_status.id == 2 %}
+                                                    <button class="button move-btn" onclick="openMoveModal()">Перенести</button>
+                                                    {% if appointment.appointment_status.id == 1 %}
+                                                        <button class="button register-btn" onclick="openRegisterModal()">Подтвердить</button>
+                                                        <button class="button decline-btn" onclick="openDeclineModal()">Отклонить</button>
+                                                    {% elif appointment.appointment_status.id == 2  %}
+                                                        <button class="button finish-btn" onclick="openFinishModal()">Завершить</button>
+                                                    {% endif %}
+    
+                                                    <!-- <a href="#" class="button edit-btn">Изменить</a> -->
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Модальное окно для переноса -->
+                        <div id="moveModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close" onclick="closeMoveModal()">×</span>
+                                <h3>Перенос записи</h3>
+                                <form method="post" id="move-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="move_appointment" value="1">
+                                    <div class="form-group">
+                                        {{ form.appointed_date.label_tag }}
+                                        {{ form.appointed_date }}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form.appointed_time.label_tag }}
+                                        {{ form.appointed_time }}
+                                    </div>
+                                    {% if error %}
+                                        <div class="alert alert-danger">{{ error }}</div>
+                                    {% endif %}
+                                    <button type="submit" class="btn btn-dark">Перенести</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Модальное окно для подтверждения -->
+                        <div id="registerModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close" onclick="closeRegisterModal()">×</span>
+                                <h3>Подтверждение записи</h3>
+                                <form method="post" id="register-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="register_appointment" value="1">
+                                    <div class="form-group">
+                                        <label for="register-reason">Причина изменения (необязательно):</label>
+                                        <textarea id="register-reason" name="update_reason" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Да, подтвердить</button>
+                                    <button type="button" class="btn btn-secondary" onclick="closeRegisterModal()">Отмена</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Модальное окно для завершения -->
+                        <div id="finishModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close" onclick="closeFinishModal()">×</span>
+                                <h3>Завершение записи</h3>
+                                <form method="post" id="finish-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="finish_appointment" value="1">
+                                    <div class="form-group">
+                                        <label for="finish-reason">Причина завершения (необязательно):</label>
+                                        <textarea id="finish-reason" name="update_reason" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Да, завершить</button>
+                                    <button type="button" class="btn btn-secondary" onclick="closeFinishModal()">Отмена</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Модальное окно для отклонения -->
+                        <div id="declineModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close" onclick="closeDeclineModal()">×</span>
+                                <h3>Отклонение записи</h3>
+                                <form method="post" id="decline-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="decline_appointment" value="1">
+                                    <div class="form-group">
+                                        <label for="decline-reason">Причина отклонения (необязательно):</label>
+                                        <textarea id="decline-reason" name="update_reason" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Да, отклонить</button>
+                                    <button type="button" class="btn btn-secondary" onclick="closeDeclineModal()">Отмена</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Модальное окно для отмены -->
+                        <div id="cancelModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close" onclick="closeCancelModal()">×</span>
+                                <h3>Отмена записи</h3>
+                                <form method="post" id="cancel-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="cancel_appointment" value="1">
+                                    <div class="form-group">
+                                        <label for="cancel-reason">Причина отклонения (необязательно):</label>
+                                        <textarea id="cancel-reason" name="update_reason" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Да, отменить</button>
+                                    <button type="button" class="btn btn-secondary" onclick="closeDeclineModal()">Отмена</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        {% else %}
+                        <div class="no-appointments-banner">
+                            <div class="banner">
+                                <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10.5 15L13.5 12M13.5 15L10.5 12" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
+                                    <path d="M22 11.7979C22 9.16554 22 7.84935 21.2305 6.99383C21.1598 6.91514 21.0849 6.84024 21.0062 6.76946C20.1506 6 18.8345 6 16.2021 6H15.8284C14.6747 6 14.0979 6 13.5604 5.84678C13.2651 5.7626 12.9804 5.64471 12.7121 5.49543C12.2237 5.22367 11.8158 4.81578 11 4L10.4497 3.44975C10.1763 3.17633 10.0396 3.03961 9.89594 2.92051C9.27652 2.40704 8.51665 2.09229 7.71557 2.01738C7.52976 2 7.33642 2 6.94975 2C6.06722 2 5.62595 2 5.25839 2.06935C3.64031 2.37464 2.37464 3.64031 2.06935 5.25839C2 5.62595 2 6.06722 2 6.94975M21.9913 16C21.9554 18.4796 21.7715 19.8853 20.8284 20.8284C19.6569 22 17.7712 22 14 22H10C6.22876 22 4.34315 22 3.17157 20.8284C2 19.6569 2 17.7712 2 14V11" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
+                                </svg>
+                            </div>
+                            <div class="title">
+                                Не удалось открыть детали записи
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span id="deputy-id" style="display: none;">{{ appointment.deputy.id|json_script:"deputy-id" }}</span>
+
+    <script id="deputy-id" type="application/json">{{ appointment.deputy.id|json_script:"deputy-id" }}</script>
+    
+    <script>
+        function openMoveModal() {
+            document.getElementById('moveModal').style.display = 'block';
+        }
+        
+        function closeMoveModal() {
+            document.getElementById('moveModal').style.display = 'none';
+        }
+
+        function openDeclineModal() {
+            document.getElementById('declineModal').style.display = 'block';
+        }
+
+        function closeDeclineModal() {
+            document.getElementById('declineModal').style.display = 'none';
+        }
+
+        function openCancelModal() {
+            document.getElementById('cancelModal').style.display = 'block';
+        }
+
+        function closeCancelModal() {
+            document.getElementById('cancelModal').style.display = 'none';
+        }
+
+        function openRegisterModal() {
+            document.getElementById('registerModal').style.display = 'block';
+        }
+
+        function closeRegisterModal() {
+            document.getElementById('registerModal').style.display = 'none';
+        }
+
+        function openFinishModal() {
+            document.getElementById('finishModal').style.display = 'block';
+        }
+
+        function closeFinishModal() {
+            document.getElementById('finishModal').style.display = 'none';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateSelect = document.getElementById('id_appointed_date');
+            const timeSelect = document.getElementById('id_appointed_time');
+            const deputyId = JSON.parse(document.getElementById('deputy-id').textContent);
+        
+            dateSelect.addEventListener('change', function() {
+                const selectedDate = this.value;
+                if (selectedDate) {
+                    fetch(`/priemka/deputy/${deputyId}/time-slots/?date=${selectedDate}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            timeSelect.innerHTML = '<option value="">Выберите время</option>';
+                            data.time_slots.forEach(slot => {
+                                const option = document.createElement('option');
+                                option.value = slot[0];
+                                option.text = slot[1];
+                                timeSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Ошибка:', error);
+                            timeSelect.innerHTML = '<option value="">Ошибка загрузки времени</option>';
+                        });
+                } else {
+                    timeSelect.innerHTML = '<option value="">Сначала выберите дату</option>';
+                }
+            });
+        });
+        </script>
+
+    {% endblock %}

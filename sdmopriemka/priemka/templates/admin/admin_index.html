@@ -1,0 +1,21 @@
+{% extends 'priemka/priemka_base.html' %}
+{% load static %}
+
+{% block header-css %} <!-- Для css -->
+
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% endblock %}
+
+{% block title %}СДМО Админ-панель{% endblock title %} <!-- Заголовок страницы -->
+
+
+{% block content %} <!-- Контент -->
+
+<div class="container d-flex">
+    <h1>Это Админ-панель</h1>
+</div>
+
+{% endblock %}

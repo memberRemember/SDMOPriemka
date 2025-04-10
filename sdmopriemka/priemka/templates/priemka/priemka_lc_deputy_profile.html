@@ -1,0 +1,285 @@
+{% extends 'priemka/priemka_base.html' %}
+{% load static %}
+
+{% block header-css %}
+<link type="text/css" href="{% static 'css/priemka_lc_settings.css' %}" rel="stylesheet">
+<link type="text/css" href="{% static 'css/priemka_lc_navbar.css' %}" rel="stylesheet">
+<link type="text/css" href="{% static 'css/cards.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"> -->
+{% endblock %}
+
+{% block title %}Карточка депутата{% endblock title %}
+
+{% block content %}
+<div class="wrapper">
+    <div class="wrap">
+        <div class="lc-block">
+            <div class="lc-nav sidebar col-md-3 p-0">
+                {% include 'priemka/inc/lc_nav.html' %}
+            </div>
+            <div class="block-list col-md-7 col-lg-10 px-md-4">
+                <div class="block-list-top">
+                    <div class="block-list-title">Карточка депутата</div>
+                    <div class="block-list-controls">
+                        
+                    </div>
+                </div>
+                <div class="block-list-items">
+                    <div class="settings-card">
+                        <div class="top">
+                            <div class="settings-item fio">
+                                <div class="title">Фамилия:</div>
+                                <div class="text">
+                                    {% if deputy.last_name and deputy.last_name != " " and deputy.last_name != "" %}
+                                        {{ deputy.last_name }}
+                                    {% else %}
+                                        Не указано
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="settings-item">
+                                <div class="title">Имя:</div>
+                                <div class="text">
+                                    {% if deputy.first_name and deputy.first_name != " " and deputy.first_name != "" %}
+                                        {{ deputy.first_name }}
+                                    {% else %}
+                                        Не указано
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="settings-item">
+                                <div class="title">Отчество:</div>
+                                <div class="text">
+                                    {% if deputy.patronymic_name and deputy.patronymic_name != " " and deputy.patronymic_name != "" %}
+                                        {{ deputy.patronymic_name }}
+                                    {% else %}
+                                        Не указано
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="settings-item">
+                                <div class="title">Должность:</div>
+                                <div class="text">
+                                    {% if deputy.position and deputy.position != " " and deputy.position != "" %}
+                                        {{ deputy.position }}
+                                    {% else %}
+                                        Не указано
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="settings-item">
+                                <div class="title">Описание:</div>
+                                <div class="text">
+                                    {% if deputy.description and deputy.description != " " and deputy.description != "" %}
+                                        {{ deputy.description }}
+                                    {% else %}
+                                        Не указано
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="settings-item">
+                                <div class="title">Избирательный округ:</div>
+                                <div class="text">
+                                    {% if deputy.electoral_district and deputy.electoral_district != " " and deputy.electoral_district != "" %}
+                                        {{ deputy.electoral_district }}
+                                    {% else %}
+                                        Не указано
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btns-block">
+                            <button class="button edit-btn" data-bs-toggle="modal" data-bs-target="#editProfileModal">Изменить</button>
+                        </div>
+                    </div>
+                    <div class="settings-card">
+                        <div class="top">
+                            <div class="settings-item email">
+                                <div class="title">Рабочая электронная почта:</div>
+                                <div class="text">
+                                    {% if deputy.email == "" or deputy.email == None or deputy.email == " " %}
+                                        Не указана
+                                    {% else %}
+                                        {{ deputy.email }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btns-block">
+                            <button class="button edit-btn" data-bs-toggle="modal" data-bs-target="#editEmailModal">Изменить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для изменения профиля -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Редактировать профиль</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm" method="post" action="{% url 'priemka_lc_deputy_profile_page' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label">Фамилия</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ deputy.last_name }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="first_name" class="form-label">Имя</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ deputy.first_name }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="patronymic_name" class="form-label">Отчество</label>
+                            <input type="text" class="form-control" id="patronymic_name" name="patronymic_name" value="{% if deputy.patronymic_name and deputy.patronymic_name != ' ' %}{{ deputy.patronymic_name }}{% endif %}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="position" class="form-label">Должность</label>
+                            <input type="text" class="form-control" id="position" name="position" value="{{ deputy.position }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Описание</label>
+                            <textarea class="form-control" id="description" name="description">{% if deputy.description and deputy.description != ' ' %}{{ deputy.description }}{% endif %}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="electoral_district" class="form-label">Избирательный округ</label>
+                            <select class="form-select" id="electoral_district" name="electoral_district" required>
+                                {% for district in electoral_districts %}
+                                    <option value="{{ district.id }}" {% if district.id == deputy.electoral_district.id %}selected{% endif %}>
+                                        {{ district.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-dark">Сохранить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для изменения email -->
+    <div class="modal fade" id="editEmailModal" tabindex="-1" aria-labelledby="editEmailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editEmailModalLabel">Изменить электронную почту</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editEmailForm" method="post" action="{% url 'priemka_lc_deputy_profile_page' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Электронная почта</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{% if deputy.email %}{{ deputy.email }}{% endif %}">
+                        </div>
+                        <button type="submit" class="btn btn-dark">Сохранить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast align-items-center text-white bg-success position-fixed bottom-0 end-0 m-3" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toast-message"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const profileForm = document.getElementById('editProfileForm');
+    const emailForm = document.getElementById('editEmailForm');
+
+    function showToast(message, isSuccess) {
+        const toastEl = document.getElementById('toast');
+        const toastMessage = document.getElementById('toast-message');
+        toastMessage.textContent = message;
+        toastEl.className = `toast align-items-center text-white position-fixed bottom-0 end-0 m-3 ${isSuccess ? 'bg-success' : 'bg-danger'}`;
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    }
+
+    if (profileForm) {
+        profileForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Сохранение...';
+
+            fetch(this.action, {
+                method: 'POST',
+                body: new FormData(this),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                if (data.status === 'success') {
+                    showToast('Профиль успешно обновлён', true);
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showToast(data.message || 'Ошибка сохранения профиля', false);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                showToast('Произошла ошибка', false);
+            });
+        });
+    }
+
+    if (emailForm) {
+        emailForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Сохранение...';
+
+            fetch(this.action, {
+                method: 'POST',
+                body: new FormData(this),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                if (data.status === 'success') {
+                    showToast('Email успешно обновлён', true);
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showToast(data.message || 'Ошибка сохранения email', false);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+                showToast('Произошла ошибка', false);
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

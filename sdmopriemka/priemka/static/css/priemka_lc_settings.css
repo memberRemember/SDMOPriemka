@@ -1,0 +1,365 @@
+.wrapper {
+    width: 100%;
+}
+.wrap {
+    display: flex;
+
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1800px;
+}
+
+
+.lc-block {
+    display: flex;
+    flex-direction: row;
+    border: 0;
+    font-size: 100%;
+    width: 100%;
+    font: inherit;
+    margin: 0;
+    padding: 40px;
+    vertical-align: baseline;
+    backdrop-filter: blur(5px);
+    background: #21252982;
+    gap: 1rem;
+}
+
+.lc-nav {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    margin: 0;
+}
+
+.block-list {
+    display: flex;
+    
+    height: 800px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding-right: 16px;
+    padding-top: 20px;
+
+    padding-bottom: 40px;
+    position: relative;
+    white-space: normal;
+
+    flex-direction: column;
+    /* justify-content: center; */
+    background: #ffffff;
+    border-radius: 10px;
+}
+
+.block-list-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.block-list-top .block-list-title {
+    font-size: 2rem;
+}
+
+.block-list-top .block-list-controls {
+    display: flex;
+    gap: 2rem;
+
+}
+
+.block-list .block-list-controls .status-filter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 11px;
+    background: #1f1f1f;
+    padding: 5px;
+}
+
+.block-list-top .block-list-controls .logout {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    border-radius: 11px;
+    background: #1f1f1f;
+    padding: 5px;
+    border: 1px solid #1f1f1f;
+    transition: 150ms;
+
+}
+
+.block-list-top .block-list-controls .logout .logout-btn{
+    display: flex;
+    height: 100%;
+    align-items: center;
+    text-decoration: none;
+    color: #9c9c9c;
+    padding: 5px;
+    transition: 150ms;
+}
+
+.block-list-top .block-list-controls .logout:hover {
+    transition: 150ms;
+    background: #1f1f1f00;
+}
+.block-list-top .block-list-controls .logout .logout-btn:hover {
+    color: #0a0a0a;
+    transition: 150ms;
+}
+
+.block-list .block-list-controls .actual-archived .archived-appointments-btn{
+    display: flex;
+    height: 100%;
+    align-items: center;
+    text-decoration: none;
+    color: #9c9c9c;
+    padding: 10px 10px 10px 10px;
+    transition: 150ms;
+    background: #1f1f1f;
+    border: none;
+}
+
+.block-list .block-list-controls .actual-archived .active {
+
+    color: #f0f0f0;
+    background: #ffffff26;
+    border-radius: 8px;
+    transition: 150ms;
+}
+
+.block-list-items {
+    margin-top: 10px;
+    display: flex;
+    
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    position: relative;
+    white-space: normal;
+
+    flex-direction: column;
+
+    gap: 1rem;
+}
+
+.settings-card {
+    display: flex;
+    flex-direction: column;
+    background: #00000005;
+    padding: 1rem;
+    border: 2px solid #dcdcdc;
+    border-radius: 10px;
+    gap: 1rem;
+}
+
+.settings-card .top {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #00000014;
+}
+
+.settings-card .top .right-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-card .top .right-block .status {
+    display: flex;
+    gap: 0.5rem;
+    /* background: #e8732e; */
+    padding: 10px;
+    border: 1px solid #0000000f;
+    border-radius: 10px;
+    color: #131313;
+
+}
+
+
+.settings-card .top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.settings-card .top .settings-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.settings-card .top .settings-item .title {
+    display: flex;
+    font-weight: 200;
+    font-size: 1.5rem;
+}
+
+.settings-card .top .settings-item .text {
+    display: flex;
+    font-weight: 500;
+    font-size: 1.5rem;
+    flex-wrap: wrap;
+    max-width: 1000px;
+}
+
+.settings-card .top .settings-item .checkbox {
+    display: flex;
+    font-weight: 500;
+    font-size: 1.5rem;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 2rem;
+}
+.settings-card .top .settings-item .checkbox .text-muted{
+    font-weight: 200;
+    font-size: 1rem;
+    color: #d83d3d !important;
+    
+}
+.settings-card .top .settings-item .checkbox .form-check-input:checked {
+    background-color: #1f1f1f;
+    border-color: #1f1f1f;
+}
+
+
+
+
+.settings-card .btns-block {
+    display: flex;
+    justify-content: end;
+}
+
+.settings-card .btns-block .edit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #111111;
+    background: #0000000d;
+    padding: 10px;
+    border: 1px solid #0000000f;
+    border-radius: 10px;
+    transition: 150ms;
+    width: 10rem;
+}
+
+.settings-card .btns-block .edit-btn:hover {
+    display: flex;
+    background: #00000023;
+    transition: 150ms;
+}
+
+.appointment-card .appointment-info .appointment-title {
+    
+    display: flex;
+    gap: 1em;
+    align-items: center;
+}
+
+.appointment-card .appointment-info .appointment-title .title {
+    display: flex;
+    font-size: 1.2rem;
+    color: #777777;
+    font-weight: 200;
+}
+
+.appointment-card .appointment-info .appointment-title .text {
+    display: flex;
+    font-size: 1.2rem;
+}
+
+.appointment-card .appointment-info .appointed-date-block {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.appointment-card .appointment-info .appointed-date-block .appointed-date-block-title {
+    display: flex;
+    font-size: 1.5rem;
+    font-weight: 200;
+    color: #777777;
+}
+
+.appointment-card .appointment-info .appointed-date-block .appointed-date {
+    display: flex;
+    font-size: 1.5rem;
+}
+
+.appointment-card .appointment-info .appointed-date-block .appointed-time {
+    display: flex;
+    font-size: 1.5rem;
+}
+
+
+
+
+/*  ------- СТиль фильтров выпадающий список-------  */
+.status-filter .status-filter-form {
+    /* height: 50px; */
+    width: 15rem;
+}
+
+.status-filter .select-box {
+    cursor: pointer;
+    position : relative;
+    max-width:  20em;
+    /* margin: 5em auto; */
+    width: 100%;
+  }
+  
+  .status-filter .select,
+  .status-filter .label {
+    color: #414141;
+    display: block;
+    font: 400 17px/2em 'Source Sans Pro', sans-serif;
+  }
+  
+  .status-filter .select {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    padding: 5px 0;
+    height: 40px;
+    opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    background: none transparent;
+    border: 0 none;
+  }
+  .status-filter .select-box1 {
+    /* background: #ececec; */
+    color: #f0f0f0;
+    background: #ffffff26;
+    border-radius: 8px;
+  }
+  
+  .status-filter .label {
+    position: relative;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  .status-filter .open .label::after {
+     content: "▲";
+  }
+  .status-filter .label::after {
+    content: "▼";
+    font-size: 12px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 5px 15px;
+    border-left: 5px solid #1f1f1f;
+  }
+
+/*  ------- КОНЕЦ СТиль фильтров выпадающий список-------  */
+
+
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.invalid-feedback {
+    display: block;
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}

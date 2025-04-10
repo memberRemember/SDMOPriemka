@@ -1,0 +1,44 @@
+{% extends 'priemka/priemka_base.html' %}
+{% load static %}
+
+{% block header-css %} <!-- Для css -->
+
+<link type="text/css" href="{% static 'css/priemka_appointment_success.css' %}" rel="stylesheet">
+
+
+{% endblock %}
+
+{% block title %}Запись на прием{% endblock title %} <!-- Заголовок страницы -->
+
+
+{% block content %} <!-- Контент -->
+
+<div class="wrapper">
+    <div class="wrap">
+        
+        <div class="appointment-container">
+            <h1 class="appointment-title">Вы успешно записались на прием!</h1>
+            <div class="control-block">
+                <div class="appointment-hint">
+                    <p>Отслеживать, а также управлять своими записями Вы можете в личном кабинете</p>
+                </div>
+                <div class="control-block-btns">
+                    
+                    <!-- <a class="btn btn-dark lc-btn">Личный кабинет</a> -->
+                    {% if request.user.role.id == 1 or request.user.role.id == 2 %}
+                    <a href="{% url 'priemka_lc_appointments_manage_page' %}" class="lc-button">Личный кабинет</a>
+                    {% else %}
+                    <a href="{% url 'priemka_lc_appointments_page' %}" class="lc-button">Личный кабинет</a>
+                    {% endif %}
+                    <a href="{% url 'priemka_index_page' %}" class="home-button">На главный экран</a>
+                    <!-- <button class="btn btn-dark home-btn">Главное окно</button> -->
+                </div>
+            </div>
+            
+            
+        </div>
+    
+    </div>    
+</div>
+
+{% endblock %}

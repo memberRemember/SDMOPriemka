@@ -1,0 +1,75 @@
+.wrapper {
+    width: 100%;
+}
+.wrap {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1800px;
+}
+
+
+.deputies-block {
+    border: 0;
+    font-size: 100%;
+    width: 100%;
+    font: inherit;
+    margin: 0;
+    padding: 40px;
+    vertical-align: baseline;
+    backdrop-filter: blur(5px);
+    background: #21252982;
+}
+
+.deputies-block .deputies-block-controls {
+    display: flex;
+    margin-bottom: 5px;
+    background: #f8f8f8;
+    margin-right: 19px;
+    padding: 5px;
+
+}
+
+.deputies-block .deputies-block-controls .deputies-filter {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    border-radius: 11px;
+    background: #1f1f1f;
+    padding: 5px;
+}
+
+.deputies-block .deputies-block-controls .deputies-filter .district-btn {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    text-decoration: none;
+    color: #9c9c9c;
+    padding: 10px 10px 10px 10px;
+    transition: 150ms;
+    background: #1f1f1f;
+    border: none;
+}
+
+.deputies-block .deputies-block-controls .deputies-filter .district-btn.active {
+    color: #f0f0f0;
+    background: #ffffff26;
+    border-radius: 5px;
+    transition: 150ms;
+}
+
+
+
+.deputies-block-list {
+    display: grid;
+    gap: 5px;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    /* grid-template-rows: 410px; */
+    height: 800px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding-right: 16px;
+    padding-bottom: 40px;
+    position: relative;
+    white-space: normal;
+}
+

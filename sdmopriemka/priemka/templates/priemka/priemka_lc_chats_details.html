@@ -1,0 +1,390 @@
+{% extends 'priemka/priemka_base.html' %}
+{% load static %}
+{% block header-css %}
+<link type="text/css" href="{% static 'css/priemka_lc.css' %}" rel="stylesheet">
+<link type="text/css" href="{% static 'css/priemka_lc_navbar.css' %}" rel="stylesheet">
+<link type="text/css" href="{% static 'css/cards.css' %}" rel="stylesheet">
+<link type="text/css" href="{% static 'css/chat.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<!-- Подключение Bootstrap CSS -->
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"> -->
+{% endblock %}
+
+{% block title %}Чат #{{ chat.id }}{% endblock title %}
+
+{% block content %}
+<div class="wrapper">
+    <div class="wrap">
+        <div class="lc-block">
+            <div class="lc-nav sidebar col-md-3 p-0">
+                {% include 'priemka/inc/lc_nav.html' %}
+            </div>
+            <div class="block-list col-md-7 col-lg-10 px-md-4">
+                <div class="block-list-top">
+                    <div class="block-list-title">
+                        Чат с {{ chat.user.get_full_name }} <small class="text-muted">({{ chat.user.role }})</small>
+                    </div>
+                    <div class="block-list-controls">
+                        <div class="back-btn-container">
+                            <a href="{% url 'priemka_lc_chats_page' %}" class="button back-btn">
+                                <i class="bi bi-arrow-left"></i> Назад к чатам
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-container">
+                    <!-- Заголовок чата -->
+                    <div class="chat-header">
+                        <div class="chat-user-info">
+                            <div class="user-name">{{ chat.user.get_full_name }}</div>
+                            <div class="chat-status">
+                                {% if chat.is_active %}
+                                    <i class="bi bi-circle-fill status-registered"></i> Активный
+                                {% else %}
+                                    <i class="bi bi-circle-fill status-declined"></i> Закрыт
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="chat-actions">
+                            <span id="chatstatus" style="display: none;">{{ chat.is_active }}</span>
+                            <span id="chatUserId" style="display: none;">{{ chat.user.id }}</span>
+                            <span id="chatChatId" style="display: none;">{{ chat.id }}</span>
+
+                            <button class="button open-user-profile-btn" id="openProfileBtn" data-bs-toggle="modal" data-bs-target="#userProfileModal">
+                                <i class="bi bi-person-square"></i> Открыть профиль
+                            </button>
+
+                            {% if chat.is_active %}
+                                <button class="button close-chat-btn" id="closeChatBtn">
+                                    <i class="bi bi-x-circle"></i> Закрыть чат
+                                </button>
+                            {% else %}
+                                <button class="button reopen-chat-btn" id="reopenChatBtn">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Открыть снова
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- чааааааат -->
+                    <div class="chat-messages" id="chatMessages">
+                        {% for message in messages %}
+                        <div class="message {% if message.sender == request.user %}message-out{% else %}message-in{% endif %}" 
+                            data-message-id="{{ message.id }}">
+                            <div class="message-content">
+                                <div class="message-text">{{ message.text }}</div>
+                                <div class="message-meta">
+                                    <span class="message-time">{{ message.timestamp|date:"H:i" }}</span>
+                                    {% if message.sender == request.user %}
+                                        <span class="message-status">
+                                            {% if message.is_read %}
+                                                <i class="bi bi-check2-all"></i> Прочитано
+                                            {% else %}
+                                                <i class="bi bi-check2"></i> Не прочитано
+                                            {% endif %}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Форма отправки сообщения -->
+                    {% if chat.is_active %}
+                    <div class="chat-input">
+                        <form id="messageForm" method="post">
+                            {% csrf_token %}
+                            <input type="text" 
+                                   id="messageInput" 
+                                   name="message" 
+                                   placeholder="Введите сообщение..." 
+                                   autocomplete="off"
+                                   required>
+                            <button type="submit" class="send-btn">
+                                <i class="bi bi-send"></i>
+                            </button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="chat-closed-notice">
+                        Чат закрыт. Новые сообщения не могут быть отправлены.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно профиля пользователя -->
+<div class="modal fade" id="userProfileModal" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userProfileModalLabel">Информация о пользователе</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="userProfileContent">
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Фамилия</label>
+                        <p class="form-control" id="userLastName"> {{ chat.user.last_name}} </p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Имя</label>
+                        <p class="form-control" id="userFirstName"> {{ chat.user.first_name}} </p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Отчество</label>
+                        <p class="form-control" id="userPatronymicName">
+                            {% if chat.user.patronymic_name == "" or chat.user.patronymic_name == None or chat.user.patronymic_name == " " %}
+                                Не указана
+                            {% else %}
+                                {{ chat.user.patronymic_name }}
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Логин</label>
+                        <p class="form-control" id="userLogin"> {{ chat.user.login}} </p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Почта</label>
+                        <p class="form-control" id="userEmail">
+                            {% if chat.user.email == "" or chat.user.email == None or chat.user.email == " " %}
+                                Не указана
+                            {% else %}
+                                {{ chat.user.email }}
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if request.user.is_authenticated %}
+    <span id="currentUserId" style="display: none;">{{ request.user.id }}</span>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Элементы DOM
+        const elements = {
+            chatMessages: document.getElementById('chatMessages'),
+            messageForm: document.getElementById('messageForm'),
+            messageInput: document.getElementById('messageInput'),
+            closeChatBtn: document.getElementById('closeChatBtn'),
+            reopenChatBtn: document.getElementById('reopenChatBtn'),
+            chatStatus: document.getElementById('chatstatus').textContent.trim() === 'True',
+            chatId: document.getElementById('currentChatId'),
+            currentUserId: document.getElementById('currentUserId').textContent.trim(),
+            csrfToken: '{{ csrf_token }}',
+        };
+    
+        // Константы URL
+        const urls = {
+            sendMessage: "{% url 'send_chat_message' chat.id %}",
+            closeChat: "{% url 'close_chat' chat.id %}",
+            reopenChat: "{% url 'reopen_chat' chat.id %}",
+            getMessages: "{% url 'get_chat_messages' chat.id %}",
+            markRead: "{% url 'mark_user_messages_read' chat.id %}"
+        };
+    
+        // Автопрокрутка к последнему сообщению
+        elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+    
+        // Универсальная функция для выполнения fetch-запросов
+        const fetchRequest = (url, method = 'GET', body = null) => {
+            const headers = {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': elements.csrfToken
+            };
+            if (body) headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            
+            return fetch(url, { method, headers, body })
+                .then(response => response.json())
+                .catch(error => console.error(`${method} error:`, error));
+        };
+    
+        // Создание элемента сообщения
+        const createMessageElement = (msg, isMe) => {
+            const div = document.createElement('div');
+            div.className = `message ${isMe ? 'message-out' : 'message-in'}`;
+            div.dataset.messageId = msg.id;
+            
+            const statusHtml = isMe ? `
+                <span class="message-status">
+                    <i class="bi bi-check2${msg.is_read ? '-all' : ''}"></i> ${msg.is_read ? 'Прочитано' : 'Не прочитано'}
+                </span>
+            ` : '';
+            
+            div.innerHTML = `
+                <div class="message-content">
+                    <div class="message-text">${msg.text}</div>
+                    <div class="message-meta">
+                        <span class="message-time">${msg.time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        ${statusHtml}
+                    </div>
+                </div>
+            `;
+            return div;
+        };
+    
+        // Отправка сообщения
+        if (elements.messageForm) {
+            elements.messageForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const message = elements.messageInput.value.trim();
+                if (!message) return;
+    
+                const tempId = Date.now();
+                const messageDiv = createMessageElement({ id: tempId, text: message, is_me: true, is_read: false }, true);
+                elements.chatMessages.appendChild(messageDiv);
+                elements.messageInput.value = '';
+                elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+    
+                fetchRequest(urls.sendMessage, 'POST', `message=${encodeURIComponent(message)}`)
+                    .then(data => {
+                        if (data?.status === 'success') {
+                            messageDiv.dataset.messageId = data.message.id;
+                        } else {
+                            messageDiv.remove();
+                        }
+                    });
+            });
+        }
+    
+        // Закрытие/открытие чата
+        const toggleChatStatus = (btn, url, confirmMsg) => {
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    if (confirm(confirmMsg)) {
+                        fetchRequest(url, 'POST').then(data => {
+                            if (data?.status === 'success') location.reload();
+                        });
+                    }
+                });
+            }
+        };
+        toggleChatStatus(elements.closeChatBtn, urls.closeChat, 'Вы уверены, что хотите закрыть этот чат?');
+        toggleChatStatus(elements.reopenChatBtn, urls.reopenChat, 'Вы уверены, что хотите открыть чат снова?');
+    
+        // const pollMessages = () => {
+        //     fetchRequest(urls.getMessages).then(data => {
+        //         if (data?.status !== 'success' || !data.messages) return;
+    
+        //         let hasNewMessages = false;
+        //         let unreadMessageIds = [];
+    
+        //         data.messages.forEach(msg => {
+        //             const existingMessage = elements.chatMessages.querySelector(`.message[data-message-id="${msg.id}"]`);
+        //             const isMe = msg.is_me;
+    
+        //             if (!existingMessage) {
+        //                 elements.chatMessages.appendChild(createMessageElement(msg, isMe));
+        //                 hasNewMessages = true;
+        //                 if (!isMe && !msg.is_read) unreadMessageIds.push(msg.id);
+        //             } else if (isMe) {
+        //                 const statusElement = existingMessage.querySelector('.message-status');
+        //                 if (statusElement && msg.is_read !== (statusElement.innerHTML.includes('check2-all'))) {
+        //                     statusElement.innerHTML = `<i class="bi bi-check2${msg.is_read ? '-all' : ''}"></i> ${msg.is_read ? 'Прочитано' : 'Не прочитано'}`;
+        //                 }
+        //             }
+        //         });
+    
+        //         if (hasNewMessages) {
+        //             elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
+        //         }
+    
+        //         if (unreadMessageIds.length > 0) {
+        //             fetchRequest(urls.markRead, 'POST');
+        //         }
+        //     });
+        // };
+
+        function pollMessages() {
+            fetch(`{% url 'get_chat_messages' chat.id %}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success' && data.messages) {
+                    let hasNewMessages = false;
+                    let hasUnreadMessages = false;
+
+                    data.messages.forEach(msg => {
+                        const existingMessage = document.querySelector(`.message[data-message-id="${msg.id}"]`);
+                        
+                        if (!existingMessage) {
+                            const messageDiv = document.createElement('div');
+                            messageDiv.className = msg.is_me ? 'message message-out' : 'message message-in';
+                            messageDiv.dataset.messageId = msg.id;
+                            
+                            let statusHtml = '';
+                            if (msg.is_me) {
+                                statusHtml = msg.is_read 
+                                    ? '<span class="message-status"><i class="bi bi-check2-all"></i> Прочитано</span>'
+                                    : '<span class="message-status"><i class="bi bi-check2"></i> Не прочитано</span>';
+                            }
+                            
+                            messageDiv.innerHTML = `
+                                <div class="message-content">
+                                    <div class="message-text">${msg.text}</div>
+                                    <div class="message-meta">
+                                        <span class="message-time">${msg.time}</span>
+                                        ${statusHtml}
+                                    </div>
+                                </div>
+                            `;
+                            chatMessages.appendChild(messageDiv);
+                            hasNewMessages = true;
+                        } else if (msg.is_me) {
+                            const statusElement = existingMessage.querySelector('.message-status');
+                            if (statusElement) {
+                                const newStatus = msg.is_read 
+                                    ? '<i class="bi bi-check2-all"></i> Прочитано' 
+                                    : '<i class="bi bi-check2"></i> Не прочитано';
+                                if (statusElement.innerHTML !== newStatus) {
+                                    statusElement.innerHTML = newStatus;
+                                }
+                            }
+                        }
+
+                        if (!msg.is_me && !msg.is_read) {
+                            hasUnreadMessages = true;
+                        }
+                    });
+
+                    if (hasNewMessages) {
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+
+                    if (hasUnreadMessages) {
+                        fetch("{% url 'mark_user_messages_read' chat.id %}", {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status !== 'success') {
+                                console.error('Failed to mark messages as read');
+                            }
+                        });
+                    }
+                }
+            })
+            .catch(error => console.error('Polling error:', error));
+        }
+
+        if (elements.chatStatus) {
+            setInterval(pollMessages, 2000);
+        }
+    });
+</script>
+{% endblock %}

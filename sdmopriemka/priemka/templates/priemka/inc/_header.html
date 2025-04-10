@@ -1,0 +1,91 @@
+{% load static %}
+
+<header class="p-3 text-bg-dark">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <!-- <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg> -->
+        <svg class="bi pe-none me-2" width="40" height="32" fill="#ffffff" version="1.1" id="Capa_1"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px"
+          viewBox="0 0 97.75 97.75" xml:space="preserve">
+          <g>
+            <g>
+              <path d="M51.641,40.855c-6.796,0-13.143,4.94-13.143,16.974c0,8.394,4.26,16.785,12.961,16.785c7.25,0,13.232-6.156,13.232-16.88
+                C64.691,47.474,59.344,40.855,51.641,40.855z" />
+              <path
+                d="M48.875,0C21.883,0,0,21.883,0,48.875S21.883,97.75,48.875,97.75S97.75,75.867,97.75,48.875S75.867,0,48.875,0z
+                M52.729,82.355c-10.242,0-14.41-7.93-14.41-7.93h-0.182c0,0,0.182,1.494,0.182,3.545v3.266h-8.43V25.187
+                c0-1.401-0.727-2.053-1.994-2.053h-3.717v-7.741h8.701c4.078,0,5.801,1.772,5.801,5.969v15.389c0,2.237-0.182,3.918-0.182,3.918
+                h0.182c0,0,3.986-7.742,14.773-7.742c12.322,0,20.119,10.072,20.119,24.716C73.572,72.656,64.779,82.355,52.729,82.355z" />
+            </g>
+          </g>
+          <use xlink:href="#bootstrap"></use>
+        </svg>
+        <span class="fs-4">SDMO Priemka</span>
+      </a>
+
+      <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="{% url 'priemka_index_page' %}" class="nav-link px-2">Запись на прием</a></li>
+
+      </ul>
+
+
+      {% if user.is_authenticated %}
+      
+
+      <div class="desktop-menu-opener">
+        <div class="balance">
+          
+          <div class="username-text-block">
+            <span class="user-nickname ms-2">{{ user_info.full_name }}</span>
+            <span class="current_balance cls-1">{{ user.role }}
+              
+            </span>
+          </div>
+          <i class="bi bi-caret-down-fill"></i>
+
+          <!-- <span class="usd-balance">(<span class="user_balance">{{ user.balance }}</span>$)</span> 
+                <i></i>-->
+        </div>
+
+        <div class="desktop-menu-wrap">
+          <div class="desktop-menu">
+            <div class="user-data">
+              <p class="user-name">{{ user.login }}</p>
+            </div>
+            {% if request.user.role.id == 1 or request.user.role.id == 2 %}
+            <a href="{% url 'priemka_lc_appointments_manage_page' %}" class="profile-button">Личный кабинет</a>
+            {% else %}
+            <a href="{% url 'priemka_lc_appointments_page' %}" class="profile-button">Личный кабинет</a>
+            {% endif %}
+            <a class="logout-button" href="{% url 'userlogout' %}" data-turbo="false">Выйти</a>
+          </div>
+        </div>
+      </div>
+
+      {% if user.is_admin or user.is_staff %}
+
+        {% if request.user.role.id == 2 %}
+        <div class="text-end m-1">
+            <a href="http://127.0.0.1:8000/admin/" class="btn btn-outline-light me-2">Админка</a>
+        </div>
+        {% endif %}
+      {% endif %}
+      {% else %}
+      <div class="text-end">
+        <a href="{% url 'authuser' %}" class="btn btn-outline-light me-2">Войти </a>
+      </div>
+
+
+      {% endif %}
+
+    </div>
+  </div>
+</header>
+
+<!-- <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">BebeSkins Маркет</a>
+
+  
+
+</header> -->

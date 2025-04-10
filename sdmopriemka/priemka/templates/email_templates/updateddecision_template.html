@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            background: #ffffff;
+            padding: 30px;
+            font-family: Arial, Helvetica, sans-serif;
+
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+
+        }
+
+        .hello {
+            display: flex;
+            font-size: 1.5rem;
+            font-weight: 200;
+
+        }
+
+        .notification {
+            display: flex;
+            font-size: 1.5rem;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        .notification p {
+            margin: 0;
+        }
+
+        .newstatus {
+            background-color: #ffffff;
+            padding: 15px;
+            color: #dd6c2b;
+            text-align: center;
+            border: 2px solid #dd6c2b;
+            border-radius: 15px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .details {
+            display: flex;
+            flex-direction: column;
+            background: #f7f7f7;
+            gap: 1rem;
+            border: 1px solid #000000;
+            border-radius: 10px;
+            padding: 10px;
+
+        }
+        .details-item {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 10px;
+
+        }
+        .details-item .title {
+            color: #00000085;
+        }
+        .details-item .text {
+
+        }
+        .bottom {
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid #0000001c;
+            margin-top: 20px;
+        }
+        .home-button {
+            display: block;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-top: auto;
+            padding: 12px;
+            color: #ffffff;
+            background: #131313;
+            box-shadow: 0px 0px 0px 1px black inset;
+            transition: 150ms;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Изменение решения по вопросу от {{ appointment.appointed_date|date:"d.m.Y" }} {{appointment.appointed_time|time:"H:i"}}</h1>
+    </div>
+    
+    <div class="content">
+        <div class="hello">
+            <p>Здравствуйте, {{ user.first_name }}!</p>
+        </div>
+        <div class="notification">
+            {% if decision.is_final %}  
+                <p>Было принято окончательное решение. Статус:</p>
+                <div class="newstatus">
+                    {{ decision.status }}
+                </div>
+            {% else %}
+                <p>Статус решения был изменен на:</p>
+                <div class="newstatus">
+                    {{ decision.status }}
+                </div>
+            {% endif %}
+
+            {% if is_staff %}
+                <div class="changedby">
+                    <p class="changedby-title">Решение было изменено пользователем:</p>
+                    <p>{{ decision.updated_by.role|default:"администратором" }} {{ decision.updated_by.last_name }} {{ decision.updated_by.first_name }} {{ decision.updated_by.patronymic_name }}</p>
+                </div>
+            {% endif %}
+            
+        </div>
+
+        <div class="details">
+            {% if is_staff %}
+                <h3>Детали записи</h3>
+                <div class="details-item">
+                    <div class="title">Посетитель:</div> 
+                    <div class="text">{{ appointment.user.last_name }} {{ appointment.user.first_name }} {{ appointment.user.patronymic_name }}</div>
+                </div>
+                <div class="details-item">
+                    <div class="title">Статус записи:</div> 
+                    <div class="text">{{ appointment.appointment_status }}</div>
+                </div>
+                <div class="details-item">
+                    <div class="title">Номер записи:</div> 
+                    <div class="text">{{ appointment.id }}</div>
+                </div>
+            {% endif %}
+            <h3>Детали решения:</h3>
+            <div class="details-item">
+                <div class="title">Тема:</div> 
+                <div class="text">{{ appointment.appointment_theme }}</div>
+            </div>
+            <div class="details-item">
+                <div class="title">Ваш вопрос:</div> 
+                <div class="text">{{ appointment.title }}</div>
+            </div>
+            <div class="details-item">
+                <div class="title">Решение:</div> 
+                <div class="text">{{ decision.decision_text }}</div>
+            </div>
+            <div class="details-item">
+                <div class="title">Дата:</div> 
+                <div class="text">{{ appointment.appointed_date|date:"d.m.Y" }}</div>
+            </div>
+            <div class="details-item">
+                <div class="title">Время:</div> 
+                <div class="text">{{  appointment.appointed_time|time:"H:i" }}</div>
+            </div>
+            <div class="details-item">
+                <div class="title">Статус решения:</div> 
+                <div class="text">{{ decision.status }}</div>
+            </div>
+        </div>
+        <div class="bottom">
+            <p>Вы можете просмотреть решения по вопросам в личном кабинете.</p> 
+            <a href="http://127.0.0.1:8000/priemka" class="home-button">На главный экран</a>
+            <!-- <p>Вы можете просмотреть свои записи в <a href="{% url 'priemka_index_page' %}">личном кабинете</a>.</p> -->
+        </div>
+        
+    </div>
+</body>
+</html>

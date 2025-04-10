@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Подтверждение email</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+        .code {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Подтверждение email</h1>
+    </div>
+    <div class="content">
+        <p>Здравствуйте, {{ user.first_name }}!</p>
+        <p>Для подтверждения вашего email <strong>{{ email }}</strong> используйте следующий код:</p>
+        
+        <div class="code">{{ code }}</div>
+        
+        <p>Если вы не запрашивали подтверждение email, проигнорируйте это письмо.</p>
+    </div>
+    <div class="footer">
+        <p>© {{ current_year }} SDMOPriemka. Все права защищены.</p>
+    </div>
+</body>
+</html>

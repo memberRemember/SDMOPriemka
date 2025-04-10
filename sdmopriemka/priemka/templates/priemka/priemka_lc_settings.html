@@ -1,0 +1,393 @@
+{% extends 'priemka/priemka_base.html' %}
+{% load static %}
+
+{% block header-css %} <!-- Для css -->
+
+<link type="text/css" href="{% static 'css/priemka_lc_settings.css' %}" rel="stylesheet">
+<link type="text/css" href="{% static 'css/priemka_lc_navbar.css' %}" rel="stylesheet">
+<link type="text/css" href="{% static 'css/cards.css' %}" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+{% endblock %}
+
+{% block title %}Личный кабинет{% endblock title %} <!-- Заголовок страницы -->
+
+
+{% block content %}
+<div class="wrapper">
+    <div class="wrap">
+        <div class="lc-block">
+            <div class="lc-nav sidebar col-md-3 p-0">
+                {% include 'priemka/inc/lc_nav.html' %}
+                <!-- <nav class="navbar">
+                    <ul class="navbar__menu">
+                        <li class="navbar__item">
+                            <a href="{% url 'priemka_lc_appointments_page' %}" class="navbar__link">
+                                <i class="bi bi-card-checklist"></i>
+                                <span>Мои записи</span>
+                            </a>
+                        </li>
+                        <li class="navbar__item active">
+                            <a href="{% url 'priemka_lc_settings_page' %}" class="navbar__link">
+                                <i class="bi bi-gear-fill"></i>
+                                <span>Настройки</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav> -->
+            </div>
+            <div class="block-list col-md-7 col-lg-10 px-md-4">
+                <div class="block-list-top">
+                    <div class="block-list-title">
+                        Настройки
+                    </div>
+                    <div class="block-list-controls">
+
+                        <div class="logout">
+                            <a href="{% url 'userlogout' %}" class="button logout-btn" >Выйти из аккаунта</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="block-list-items">
+                    <div class="settings-card">
+                        
+                        <div class="top">
+                            <div class="settings-item fio">
+                                <div class="title">Фамилия:</div>
+                                <div class="text">
+                                    {% if user.last_name and user.last_name != " " %}
+                                        {{ user.last_name }}
+                                    {% else %}
+                                        Не указано
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="settings-item">
+                                <div class="title">Имя:</div>
+                                <div class="text">
+                                    {% if user.first_name and user.first_name != " " %}
+                                        {{ user.first_name }}
+                                    {% else %}
+                                        Не указано
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="settings-item">
+                                <div class="title">Отчество:</div>
+                                <div class="text">
+                                    {% if user.patronymic_name and user.patronymic_name != " " %}
+                                        {{ user.patronymic_name }}
+                                    {% else %}
+                                        Не указано
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btns-block">
+                            <button class="button edit-btn" data-bs-toggle="modal" data-bs-target="#editNameModal">Изменить</button>
+                        </div>
+                        
+                    </div>
+                    <div class="settings-card">
+
+                        <div class="top">
+                            <div class="settings-item email">
+                                <div class="title">Электронная почта:</div>
+                                <div class="text">
+                                    {% if user.email == "" or user.email == None or user.email == " " %}
+                                        Не указана
+                                    {% else %}
+                                        {{ user.email }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btns-block">
+                            <button class="button edit-btn" data-bs-toggle="modal" data-bs-target="#editEmailModal">Изменить</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="top">
+                            <div class="settings-item notifications">
+                                <div class="title">Получать уведомления?</div>
+                                <div class="checkbox">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input notification-switch" 
+                                            type="checkbox" 
+                                            id="receiveNotifications" 
+                                            {% if user.receive_notifications %}checked{% endif %}
+                                            {% if not user.email or not email_confirmed %}disabled{% endif %}>
+                                        
+                                    </div>
+                                    {% if not user.email %}
+                                        <div class="text-muted small mt-2">Добавьте email для включения уведомлений</div>
+                                    {% elif not email_confirmed %}
+                                        <div class="text-muted small mt-2">Подтвердите email для включения уведомлений</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для изменения ФИО -->
+    <div class="modal fade" id="editNameModal" tabindex="-1" aria-labelledby="editNameModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editNameModalLabel">Изменить ФИО</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editNameForm" method="post" action="{% url 'priemka_lc_settings_page' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label">Фамилия</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="first_name" class="form-label">Имя</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="patronymic_name" class="form-label">Отчество</label>
+                            <input type="text" class="form-control" id="patronymic_name" name="patronymic_name" value="{% if user.patronymic_name and user.patronymic_name != ' ' %}{{ user.patronymic_name }}{% endif %}">
+                        </div>
+                        <button type="submit" class="btn btn-dark">Сохранить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для изменения email -->
+    <!-- <div class="modal fade" id="editEmailModal" tabindex="-1" aria-labelledby="editEmailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editEmailModalLabel">Изменить электронную почту</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editEmailForm" method="post" action="{% url 'priemka_lc_settings_page' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Электронная почта</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{% if user.email %}{{ user.email }}{% endif %}">
+                        </div>
+                        <button type="submit" class="btn btn-dark">Сохранить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    -->
+
+    <div class="modal fade" id="editEmailModal" tabindex="-1" aria-labelledby="editEmailModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editEmailModalLabel">Изменить электронную почту</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editEmailForm" method="post" action="{% url 'priemka_lc_settings_page' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Электронная почта</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{% if user.email %}{{ user.email }}{% endif %}" required>
+                            <div class="invalid-feedback" id="emailError"></div>
+                        </div>
+                        <div class="mb-3" id="codeField" style="display: none;">
+                            <label for="code" class="form-label">Код подтверждения</label>
+                            <input type="text" class="form-control" id="code" name="code">
+                            <div class="invalid-feedback" id="codeError"></div>
+                            <small class="text-muted">Код отправлен на указанный email</small>
+                        </div>
+                        <button type="submit" class="btn btn-dark">Сохранить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="toast" class="toast align-items-center text-white bg-success position-fixed bottom-0 end-0 m-3" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+        <div class="toast-body" id="toast-message"></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const emailForm = document.getElementById('editEmailForm');
+        const emailField = document.getElementById('email');
+        const emailError = document.getElementById('emailError');
+        const codeField = document.getElementById('codeField');
+        const codeInput = document.getElementById('code');
+        const codeError = document.getElementById('codeError');
+        const submitBtn = emailForm.querySelector('button[type="submit"]');
+
+        // Функция очистки ошибок
+        function clearErrors() {
+            emailField.classList.remove('is-invalid');
+            emailError.textContent = '';
+            codeInput.classList.remove('is-invalid');
+            codeError.textContent = '';
+        }
+
+        emailForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            clearErrors();
+            
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Отправка...';
+            
+            try {
+                const response = await fetch(emailForm.action, {
+                    method: 'POST',
+                    body: new FormData(emailForm),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok && data.status !== 'code_required') {
+                    // Обработка ошибок валидации
+                    if (data.errors) {
+                        if (data.errors.email) {
+                            emailField.classList.add('is-invalid');
+                            emailError.textContent = data.errors.email;
+                        }
+                        if (data.errors.code) {
+                            codeInput.classList.add('is-invalid');
+                            codeError.textContent = data.errors.code;
+                        }
+                        if (data.errors.__all__) {
+                            // Для общих ошибок (если есть)
+                            emailField.classList.add('is-invalid');
+                            emailError.textContent = data.errors.__all__;
+                        }
+                    }
+                    return;
+                }
+                
+                switch(data.status) {
+                    case 'success':
+                        // Успешное обновление - перезагружаем страницу
+                        location.reload();
+                        break;
+                        
+                    case 'code_required':
+                        // Показываем поле для кода
+                        codeField.style.display = 'block';
+                        // Фокусируемся на поле ввода кода
+                        codeInput.focus();
+                        break;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Для неожиданных ошибок
+                emailField.classList.add('is-invalid');
+                emailError.textContent = 'Произошла непредвиденная ошибка';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+
+        // Очищаем ошибки при изменении полей
+        emailField.addEventListener('input', () => {
+            emailField.classList.remove('is-invalid');
+            emailError.textContent = '';
+        });
+        
+        codeInput.addEventListener('input', () => {
+            codeInput.classList.remove('is-invalid');
+            codeError.textContent = '';
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const notificationSwitch = document.querySelector('.notification-switch');
+        
+        if (notificationSwitch) {
+            notificationSwitch.addEventListener('change', function() {
+                if (this.disabled) return;
+                
+                const isChecked = this.checked;
+                this.disabled = true;
+                
+                fetch("{% url 'priemka_lc_settings_page' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: `receive_notifications=${isChecked}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    this.disabled = false;
+                    
+                    if (data.status === 'success') {
+                        showToast('Настройки уведомлений сохранены', true);
+                        
+                        // Обновляем состояние переключателя на сервере
+                        if (data.has_confirmed_email === false) {
+                            this.checked = false;
+                            this.disabled = true;
+                            // Можно добавить сообщение о необходимости подтвердить email
+                        }
+                    } else {
+                        this.checked = !isChecked;
+                        showToast(data.message || 'Ошибка сохранения настроек', false);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    this.disabled = false;
+                    this.checked = !isChecked;
+                    showToast('Произошла ошибка при сохранении настроек', false);
+                });
+            });
+        }
+
+        // Функция для показа toast-уведомлений
+        function showToast(message, isSuccess) {
+            const toastEl = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            if (!toastEl || !toastMessage) return;
+            
+            toastMessage.textContent = message;
+            toastEl.className = `toast align-items-center text-white position-fixed bottom-0 end-0 m-3 ${isSuccess ? 'bg-success' : 'bg-danger'}`;
+            
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+    });
+</script>
+{% endblock %}

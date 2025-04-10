@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            background: #ffffff;
+            padding: 30px;
+            font-family: Arial, Helvetica, sans-serif;
+
+        }
+
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+
+        }
+
+        .hello {
+            display: flex;
+            font-size: 1.5rem;
+            font-weight: 200;
+
+        }
+
+        .notification {
+            display: flex;
+            font-size: 1.5rem;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        .notification p {
+            margin: 0;
+        }
+
+        .newtime {
+            background-color: #ffffff;
+            padding: 15px;
+            color: #dd6c2b;
+            text-align: center;
+            border: 2px solid #dd6c2b;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+
+        .changedby {
+            display: flex;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            flex-direction: column;
+        }
+
+        .changedby .changedby-title {
+            color: #00000085;
+
+        }
+
+        .reason {
+            display: flex;
+            margin-bottom: 20px;
+            flex-direction: column;
+        }
+
+        .details {
+            display: flex;
+            flex-direction: column;
+            background: #f7f7f7;
+            gap: 1rem;
+            border: 1px solid #000000;
+            border-radius: 10px;
+            padding: 10px;
+
+        }
+        .details-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+
+        }
+        .details-item .title {
+            color: #00000085;
+        }
+        .details-item .text {
+
+        }
+        .bottom {
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid #0000001c;
+            margin-top: 20px;
+        }
+        .home-button {
+            display: block;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-top: auto;
+            padding: 12px;
+            color: #ffffff;
+            background: #131313;
+            box-shadow: 0px 0px 0px 1px black inset;
+            transition: 150ms;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Запись на прием перенесена</h1>
+    </div>
+    
+    <div class="content">
+        <div class="hello">
+            <p>Здравствуйте, {{ user.first_name }}!</p>
+        </div>
+        <div class="notification">       
+            <p>Ваша запись была перенесена на:</p>
+            <div class="newtime">
+                {{ appointment.appointed_date|date:"d.m.Y"  }} {{  appointment.appointed_time|time:"H:i" }}
+            </div>
+
+            {% if changed_by and changed_by.id != appointment.user.id %}
+                <div class="changedby">
+                    <p class="changedby-title">Ваша запись была перенесена пользователем:</p>
+                    <p>{{ changed_by.role|default:"администратором" }} {{ changed_by.last_name }} {{ changed_by.first_name }} {{ changed_by.patronymic_name }}</p>
+                </div>
+            {% endif %}
+
+            {% if update_reason %}
+                <div class="reason">
+                    <p><strong>Причина:</strong> {{ update_reason }}</p>
+                </div>
+            {% endif %}
+                
+            
+            
+        </div>
+        <div class="details">
+            <h3>Детали записи:</h3>
+            <div class="details-item">
+                <div class="title">Заголовок:</div> 
+                <div class="text">{{ appointment.title }}</div>
+            </div>
+            <div class="details-item">
+                <div class="title">Тема:</div> 
+                <div class="text">{{ appointment.appointment_theme }}</div>
+            </div>
+            <div class="details-item">
+                <div class="title">Описание:</div> 
+                <div class="text">{{ appointment.description }}</div>
+            </div>
+            <div class="details-item">
+                <div class="title">Дата:</div> 
+                <div class="text">{{ appointment.appointed_date|date:"d.m.Y" }}</div>
+            </div>
+            <div class="details-item">
+                <div class="title">Время:</div> 
+                <div class="text">{{  appointment.appointed_time|time:"H:i" }}</div>
+            </div>
+            <div class="details-item">
+                <div class="title">Статус:</div> 
+                <div class="text">{{ appointment.appointment_status }}</div>
+            </div>
+        </div>
+        <div class="bottom">
+            <p>Вы можете просмотреть свои записи в личном кабинете.</p> 
+            <a href="http://127.0.0.1:8000/priemka" class="home-button">На главный экран</a>
+            <!-- <p>Вы можете просмотреть свои записи в <a href="{% url 'priemka_index_page' %}">личном кабинете</a>.</p> -->
+        </div>
+        
+    </div>
+</body>
+</html>
