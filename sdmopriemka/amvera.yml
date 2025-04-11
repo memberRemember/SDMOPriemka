@@ -6,6 +6,6 @@ meta:
 build:
   requirementsPath: requirements.txt
 run:
-  command: python3 manage.py runserver
+  command: cd sdmopriemka && gunicorn -k uvicorn.workers.UvicornWorker sdmopriemka.asgi:application --bind 0.0.0.0:80
   persistenceMount: /data
   containerPort: 80
