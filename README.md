@@ -37,7 +37,8 @@ cd sdmopriemka && pip install -r requirements.txt
 ### Шаг 3
 В файле `settings.py` проекта sdmopriemka
 ```
-└── Ваша папка
+Ваша папка
+└── sdmopriemka
     ├── ...
     ├── priemka - #app
     └── sdmopriemka - #project
