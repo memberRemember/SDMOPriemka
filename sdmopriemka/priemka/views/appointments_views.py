@@ -17,13 +17,11 @@ def priemka_lc_appointments(request):
     if not request.user.is_authenticated:
         raise Http404("Страница не найдена")
 
-
     context['user_info'] = {
         'short_name': request.user.get_short_name(),
         'full_name': request.user.get_full_name()
     }
 
-    # Получаем депутатов (с обработкой ошибки)
     deputies = Deputy.objects.filter(appointment__user=request.user).distinct()
 
     # AJAX-запрос (фильтрация записей)
