@@ -4,12 +4,16 @@ ignore =
     E501,
     W503,
     W293,
+<<<<<<< HEAD
     E203,
     F403,
     F405,
     W291,
     E302,
 
+=======
+    E203
+>>>>>>> 594844c (updated workflows with flake8)
 
 max-line-length = 120
 
@@ -18,7 +22,10 @@ exclude =
     migrations,
     venv,
     env,
+<<<<<<< HEAD
     __init__,
+=======
+>>>>>>> 594844c (updated workflows with flake8)
     __pycache__,
     .git,
     *.html,
