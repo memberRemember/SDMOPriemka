@@ -52,7 +52,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'localhost',
         'PORT': 5432,
-        'NAME': 'sdmopriemka',
+        'NAME': '<название вашей базы данных>',
         'USER': '<ваше имя пользователя>', # "postgres" для Windows
         'PASSWORD': '<ваш пароль>',
     }
