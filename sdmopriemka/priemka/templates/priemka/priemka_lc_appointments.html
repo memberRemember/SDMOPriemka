@@ -3,7 +3,8 @@
 
 {% block header-css %} <!-- Для css -->
 
-<link type="text/css" href="{% static 'css/priemka_lc.css' %}" rel="stylesheet">
+<link type="text/css" href="{% static 'css/priemka_lc_obfuscated.css' %}" rel="stylesheet">
+<!-- <link type="text/css" href="{% static 'css/priemka_lc.css' %}" rel="stylesheet"> -->
 <link type="text/css" href="{% static 'css/priemka_lc_navbar.css' %}" rel="stylesheet">
 <link type="text/css" href="{% static 'css/cards.css' %}" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
@@ -12,9 +13,11 @@
 
 {% block title %}Личный кабинет{% endblock title %} <!-- Заголовок страницы -->
 
+{% load obfuscate_classes %}
 
 {% block content %} <!-- Контент -->
     <div class="wrapper">
+
         <div class="wrap">
             <div class="lc-block">
                 <div class="lc-nav sidebar col-md-3 p-0">
@@ -168,7 +171,9 @@
             </div>
         </div>
         
-        <script>
+        <script src="{% static 'js/priemka_lc_appointments_obfuscated.js' %}"></script>
+        
+        <!-- <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const actualBtn = document.querySelector('.actual-appointments-btn');
                 const archivedBtn = document.querySelector('.archived-appointments-btn');
@@ -312,6 +317,6 @@
                 updateStatusLabel();
                 updateUserLabel();
             });
-            </script>
+            </script> -->
 
 {% endblock %}

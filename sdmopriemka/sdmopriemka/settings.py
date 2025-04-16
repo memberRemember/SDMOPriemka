@@ -74,6 +74,23 @@ TEMPLATES = [
     },
 ]
 
+
+PIPELINE = {
+    'CSS_COMPRESSOR': 'pipeline.compressors.cssmin.CSSMinCompressor',
+    'COMPILERS': (
+        'pipeline.compilers.sass.SASSCompiler',
+    ),
+    'STYLESHEETS': {
+        'priemka': {
+            'source_filenames': (
+                'css/priemka_lc_obfuscated.css',
+            ),
+            'output_filename': 'css/priemka_lc_obfuscated.min.css',
+        },
+    },
+}
+
+
 WSGI_APPLICATION = 'sdmopriemka.wsgi.application'
 
 
