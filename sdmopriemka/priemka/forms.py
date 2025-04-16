@@ -2,7 +2,6 @@ from django import forms
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 import re
@@ -257,7 +256,6 @@ class AppointmentForm(forms.ModelForm):
         self.fields['appointment_theme'].empty_label = 'Выберите тему обращения'
         self.fields['appointment_theme'].queryset = AppointmentTheme.objects.all()
 
-
         self.user_role = user_role
         self.deputy = deputy
 
@@ -379,6 +377,7 @@ class AppointmentForm(forms.ModelForm):
 #             'appointed_date': forms.HiddenInput() 
 #         }
 
+
 class MoveAppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
@@ -472,7 +471,6 @@ class EmailConfirmationForm(forms.Form):
                     'email': 'Этот email уже используется другим пользователем'
                 })
             
-
             if not code:
                 try:
                     confirmation = EmailConfirmation.create_confirmation(self.user, email)
@@ -486,7 +484,6 @@ class EmailConfirmationForm(forms.Form):
                         'email': f'Ошибка отправки кода: {str(e)}'
                     })
             
-
             try:
                 confirmation = EmailConfirmation.objects.get(
                     user=self.user,

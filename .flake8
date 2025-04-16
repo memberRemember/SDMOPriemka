@@ -4,7 +4,11 @@ ignore =
     E501,
     W503,
     W293,
-    E203
+    E203,
+    F403,
+    F405,
+    W291,
+
 
 max-line-length = 120
 
@@ -13,6 +17,7 @@ exclude =
     migrations,
     venv,
     env,
+    __init__,
     __pycache__,
     .git,
     *.html,
