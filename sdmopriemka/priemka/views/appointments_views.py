@@ -205,12 +205,12 @@ def priemka_lc_appointments_today_deputy(request):
         deputy=deputy,
         is_archived=False,
         appointment_status__id=2,
-        appointed_date=datetime.today().strftime('%Y-%d-%m')
+        appointed_date=datetime.today().strftime('%Y-%m-%d')
     ).order_by('appointed_time') if deputy else Appointment.objects.none()
 
     
     deputies = Deputy.objects.all()
-    users = User.objects.filter(appointment__isnull=False, appointment__appointed_date=datetime.today().strftime('%Y-%d-%m')).distinct()
+    users = User.objects.filter(appointment__isnull=False, appointment__appointed_date=datetime.today().strftime('%Y-%m-%d')).distinct()
 
     context['deputies'] = deputies
     context['appointments'] = appointments

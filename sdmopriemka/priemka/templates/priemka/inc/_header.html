@@ -55,6 +55,8 @@
             </div>
             {% if request.user.role.id == 1 or request.user.role.id == 2 %}
             <a href="{% url 'priemka_lc_appointments_manage_page' %}" class="profile-button">Личный кабинет</a>
+            {% elif request.user.role.id == 3 %}
+            <a href="{% url 'priemka_lc_appointments_deputy_page' %}" class="profile-button">Личный кабинет</a>
             {% else %}
             <a href="{% url 'priemka_lc_appointments_page' %}" class="profile-button">Личный кабинет</a>
             {% endif %}

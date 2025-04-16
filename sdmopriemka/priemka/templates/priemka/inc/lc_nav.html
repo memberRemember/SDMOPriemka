@@ -1,102 +1,100 @@
 <nav class="navbar">
     <ul class="navbar__menu">
-        
-        <!-- СЕКРЕТАРЬ -->
-        {% if request.user.role.id == 1 %}
-        <li class="navbar__item {% if active_page == 'appointments_manage' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_appointments_manage_page' %}" class="navbar__link">
-                <i class="bi bi-card-checklist"></i>
-                <span>Управление записями</span>
-            </a>
-        </li>
-        <li class="navbar__item {% if active_page == 'chats' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_chats_page' %}" class="navbar__link">
-                <i class="bi bi-chat-right-text-fill"></i>
-                <span>Чаты</span>
-            </a>
-        </li>
-        <!-- ДЕПУТАТ -->
-        {% elif request.user.role.id == 3 %}
-        <li class="navbar__item {% if active_page == 'appointments_today_deputy' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_appointments_today_deputy_page' %}" class="navbar__link">
-                <i class="bi bi-calendar-check"></i>
-                <span>Записи на сегодня</span>
-            </a>
-        </li>
-        <li class="navbar__item {% if active_page == 'appointments_deputy' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_appointments_deputy_page' %}" class="navbar__link">
-                <i class="bi bi-card-checklist"></i>
-                <span>Записи ко мне</span>
-            </a>
-        </li>
-        <li class="navbar__item {% if active_page == 'decisions_deputy' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_decisions_deputy_page' %}" class="navbar__link">
-                <i class="bi bi-clipboard-check-fill"></i>
-                <span>Мои решения</span>
-            </a>
-        </li>
-        <li class="navbar__item {% if active_page == 'deputy_profile' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_deputy_profile_page' %}" class="navbar__link">
-                <i class="bi bi-person-square"></i>
-                <span>Профиль</span>
-            </a>
-        </li>
-        <li class="navbar__item {% if active_page == 'statistics' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_statistics_page' %}" class="navbar__link">
-                <i class="bi bi-bar-chart-fill"></i>
-                <span>Статистика</span>
-            </a>
-        </li>
-        <!-- АДМИН -->
-        {% elif request.user.role.id == 2 %}
-        <li class="navbar__item {% if active_page == 'decisions_deputy' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_decisions_deputy_page' %}" class="navbar__link">
-                <i class="bi bi-clipboard-check-fill"></i>
-                <span>Решения</span>
-            </a>
-        </li>
-        <li class="navbar__item {% if active_page == 'appointments_manage' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_appointments_manage_page' %}" class="navbar__link">
-                <i class="bi bi-card-checklist"></i>
-                <span>Управление записями</span>
-            </a>
-        </li>
-        <li class="navbar__item {% if active_page == 'chats' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_chats_page' %}" class="navbar__link">
-                <i class="bi bi-chat-right-text-fill"></i>
-                <span>Чаты</span>
-            </a>
-        </li>
-        <li class="navbar__item {% if active_page == 'statistics' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_statistics_page' %}" class="navbar__link">
-                <i class="bi bi-bar-chart-fill"></i>
-                <span>Статистика</span>
-            </a>
-        </li>
+        {% if request.user.is_authenticated %}
+            <!-- СЕКРЕТАРЬ -->
+            {% if request.user.role.id == 1 %}
+                <li class="navbar__item {% if active_page == 'appointments_manage' %}active{% endif %}">
+                    <a href="{% url 'priemka_lc_appointments_manage_page' %}" class="navbar__link">
+                        <i class="bi bi-card-checklist"></i>
+                        <span>Управление записями</span>
+                    </a>
+                </li>
+                <li class="navbar__item {% if active_page == 'chats' %}active{% endif %}">
+                    <a href="{% url 'priemka_lc_chats_page' %}" class="navbar__link">
+                        <i class="bi bi-chat-right-text-fill"></i>
+                        <span>Чаты</span>
+                    </a>
+                </li>
 
-        <!-- ПОСЕТИТЕЛЬ -->
+            <!-- АДМИН -->
+            {% elif request.user.role.id == 2 %}
+                <li class="navbar__item {% if active_page == 'decisions_deputy' %}active{% endif %}">
+                    <a href="{% url 'priemka_lc_decisions_deputy_page' %}" class="navbar__link">
+                        <i class="bi bi-clipboard-check-fill"></i>
+                        <span>Решения</span>
+                    </a>
+                </li>
+                <!-- Общие пункты для админа и секретаря -->
+                <li class="navbar__item {% if active_page == 'appointments_manage' %}active{% endif %}">
+                    <a href="{% url 'priemka_lc_appointments_manage_page' %}" class="navbar__link">
+                        <i class="bi bi-card-checklist"></i>
+                        <span>Управление записями</span>
+                    </a>
+                </li>
+                <li class="navbar__item {% if active_page == 'chats' %}active{% endif %}">
+                    <a href="{% url 'priemka_lc_chats_page' %}" class="navbar__link">
+                        <i class="bi bi-chat-right-text-fill"></i>
+                        <span>Чаты</span>
+                    </a>
+                </li>
+
+            <!-- ДЕПУТАТ -->
+            {% elif request.user.role.id == 3 %}
+                <li class="navbar__item {% if active_page == 'appointments_today_deputy' %}active{% endif %}">
+                    <a href="{% url 'priemka_lc_appointments_today_deputy_page' %}" class="navbar__link">
+                        <i class="bi bi-calendar-check"></i>
+                        <span>Записи на сегодня</span>
+                    </a>
+                </li>
+                <li class="navbar__item {% if active_page == 'appointments_deputy' %}active{% endif %}">
+                    <a href="{% url 'priemka_lc_appointments_deputy_page' %}" class="navbar__link">
+                        <i class="bi bi-card-checklist"></i>
+                        <span>Записи ко мне</span>
+                    </a>
+                </li>
+                <li class="navbar__item {% if active_page == 'decisions_deputy' %}active{% endif %}">
+                    <a href="{% url 'priemka_lc_decisions_deputy_page' %}" class="navbar__link">
+                        <i class="bi bi-clipboard-check-fill"></i>
+                        <span>Мои решения</span>
+                    </a>
+                </li>
+                <li class="navbar__item {% if active_page == 'deputy_profile' %}active{% endif %}">
+                    <a href="{% url 'priemka_lc_deputy_profile_page' %}" class="navbar__link">
+                        <i class="bi bi-person-square"></i>
+                        <span>Профиль</span>
+                    </a>
+                </li>
+                <li class="navbar__item {% if active_page == 'statistics' %}active{% endif %}">
+                    <a href="{% url 'priemka_lc_statistics_page' %}" class="navbar__link">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        <span>Статистика</span>
+                    </a>
+                </li>
+            {% else %}
+                <!-- ПОСЕТИТЕЛЬ -->
+                <li class="navbar__item {% if active_page == 'appointments' %}active{% endif %}">
+                    <a href="{% url 'priemka_lc_appointments_page' %}" class="navbar__link">
+                        <i class="bi bi-card-checklist"></i>
+                        <span>Мои записи</span>
+                    </a>
+                </li>
+            {% endif %}
+
+
+            <li class="navbar__item {% if active_page == 'settings' %}active{% endif %}">
+                <a href="{% url 'priemka_lc_settings_page' %}" class="navbar__link">
+                    <i class="bi bi-gear-fill"></i>
+                    <span>Настройки</span>
+                </a>
+            </li>
         {% else %}
-        <li class="navbar__item {% if active_page == 'appointments' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_appointments_page' %}" class="navbar__link">
-                <i class="bi bi-card-checklist"></i>
-                <span>Мои записи</span>
-            </a>
-        </li>
-        <li class="navbar__item {% if active_page == 'decisions' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_decisions_page' %}" class="navbar__link">
-                <i class="bi bi-clipboard-check-fill"></i>
-                <span>Решения</span>
-            </a>
-        </li>
 
+            <li class="navbar__item">
+                <a href="{% url 'login' %}" class="navbar__link">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span>Войти</span>
+                </a>
+            </li>
         {% endif %}
-        <hr>
-
-        <li class="navbar__item {% if active_page == 'settings' %}active{% endif %}">
-            <a href="{% url 'priemka_lc_settings_page' %}" class="navbar__link">
-                <i class="bi bi-gear-fill"></i>
-                <span>Настройки</span>
-            </a>
-        </li>
     </ul>
 </nav>
