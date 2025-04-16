@@ -2,7 +2,6 @@ from django.db import models
 from pgtrigger import *
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 import random
@@ -348,4 +347,3 @@ class Message(models.Model):
     
     def __str__(self):
         return f'Сообщение {self.pk} (Чат: {self.chat.pk}, Отправитель: {self.sender.login})'
-    

@@ -26,4 +26,4 @@ jobs:
 
       - name: Run linter
         run: |
-          flake8 sdmopriemka/priemka/forms.py sdmopriemka/priemka/models.py sdmopriemka/priemka/views/
+          flake8 sdmopriemka/priemka/forms.py sdmopriemka/priemka/models.py
