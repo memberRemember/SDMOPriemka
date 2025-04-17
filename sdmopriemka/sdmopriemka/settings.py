@@ -76,22 +76,6 @@ TEMPLATES = [
 ]
 
 
-PIPELINE = {
-    'CSS_COMPRESSOR': 'pipeline.compressors.cssmin.CSSMinCompressor',
-    'COMPILERS': (
-        'pipeline.compilers.sass.SASSCompiler',
-    ),
-    'STYLESHEETS': {
-        'priemka': {
-            'source_filenames': (
-                'css/priemka_lc_obfuscated.css',
-            ),
-            'output_filename': 'css/priemka_lc_obfuscated.min.css',
-        },
-    },
-}
-
-
 WSGI_APPLICATION = 'sdmopriemka.wsgi.application'
 
 
@@ -126,10 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-]
-
-PASSWORD_HASHERS = [
-    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
 ]
 
 AUTH_USER_MODEL = 'priemka.User'
