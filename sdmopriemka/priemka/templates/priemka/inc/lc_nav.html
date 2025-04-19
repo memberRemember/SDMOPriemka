@@ -78,6 +78,12 @@
                         <span>Мои записи</span>
                     </a>
                 </li>
+                <li class="navbar__item {% if active_page == 'decisions' %}active{% endif %}">
+                    <a href="{% url 'priemka_lc_decisions_page' %}" class="navbar__link">
+                        <i class="bi bi-clipboard-check-fill"></i>
+                        <span>Решения</span>
+                    </a>
+                </li>
             {% endif %}
 
 
