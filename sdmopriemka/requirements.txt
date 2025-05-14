@@ -1,3 +1,5 @@
 Django==4.2.20
 reportlab==4.3.1
 transliterate==1.10.2
+gunicorn==21.2.0
+uvicorn==0.22.0
