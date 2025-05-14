@@ -4,7 +4,7 @@ meta:
     name: pip
     version: 3.13
 build:
-  requirementsPath: requirements.txt
+  requirementsPath: sdmopriemka/requirements.txt
 run:
   command: cd sdmopriemka && gunicorn -k uvicorn.workers.UvicornWorker sdmopriemka.asgi:application --bind 0.0.0.0:80
   persistenceMount: /data
