@@ -51,4 +51,3 @@ wheel==0.45.1
 yarg==0.1.10
 
 gunicorn==21.2.0
-uvicorn==0.22.0
