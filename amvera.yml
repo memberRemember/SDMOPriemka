@@ -7,6 +7,6 @@ build:
   requirementsPath: sdmopriemka/requirements.txt
 run:
   # command: cd sdmopriemka && gunicorn -k uvicorn.workers.UvicornWorker sdmopriemka.asgi:application --bind 0.0.0.0:80
-  command: pwd && gunicorn -k uvicorn.workers.UvicornWorker sdmopriemka.sdmopriemka.asgi:application --bind 0.0.0.0:80
+  command: pwd && cd sdmopriemka && pwd && gunicorn -k uvicorn.workers.UvicornWorker sdmopriemka.asgi:application --bind 0.0.0.0:80
   persistenceMount: /data
   containerPort: 80
