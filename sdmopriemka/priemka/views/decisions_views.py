@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
 from ..forms import *
 from ..email_notifications import *
@@ -12,6 +12,9 @@ def priemka_lc_decisions_deputy(request):
         'active_page': 'decisions_deputy',
     }
     
+    if not request.user.is_authenticated:
+        raise Http404("Страница не найдена")
+
     if request.user.is_authenticated:
         context['user_info'] = {
             'short_name': request.user.get_short_name(),
@@ -83,6 +86,9 @@ def priemka_lc_decisions(request):
         'active_page': 'decisions',
     }
     
+    if not request.user.is_authenticated:
+        raise Http404("Страница не найдена")
+
     if request.user.is_authenticated:
         context['user_info'] = {
             'short_name': request.user.get_short_name(),

@@ -1,14 +1,7 @@
 from django.db import models
 from pgtrigger import *
-from django.contrib.auth.models import AbstractBaseUser, AbstractUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
-from datetime import datetime, timedelta
-from django.core.exceptions import ValidationError
-from django.core.mail import send_mail
-from django.conf import settings
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 import random

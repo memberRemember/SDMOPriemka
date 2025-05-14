@@ -3,6 +3,7 @@
 
 {% block header-css %} <!-- Для css -->
 
+
 <link type="text/css" href="{% static 'css/priemka_lc.css' %}" rel="stylesheet">
 <link type="text/css" href="{% static 'css/priemka_lc_navbar.css' %}" rel="stylesheet">
 <link type="text/css" href="{% static 'css/cards.css' %}" rel="stylesheet">
@@ -12,9 +13,11 @@
 
 {% block title %}Личный кабинет{% endblock title %} <!-- Заголовок страницы -->
 
+{% load obfuscate_classes %}
 
 {% block content %} <!-- Контент -->
     <div class="wrapper">
+
         <div class="wrap">
             <div class="lc-block">
                 <div class="lc-nav sidebar col-md-3 p-0">
@@ -167,6 +170,8 @@
                 </div>
             </div>
         </div>
+        
+        <!-- <script src="{% static 'js/priemka_lc_appointments_obfuscated.js' %}"></script> -->
         
         <script>
             document.addEventListener('DOMContentLoaded', function() {

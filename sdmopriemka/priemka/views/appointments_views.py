@@ -1,5 +1,6 @@
+from datetime import datetime, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
 from ..forms import *
 from ..email_notifications import *
@@ -11,21 +12,20 @@ from ..models import *
 
 def priemka_lc_appointments(request):
     context = {
-        'active_page':'appointments',
+        'active_page': 'appointments',
     }
-    
-    if request.user.is_authenticated:
-        context['user_info'] = {
-            'short_name': request.user.get_short_name(),
-            'full_name': request.user.get_full_name()
-        }
 
-    try:
-        deputies = Deputy.objects.filter(appointment__user=request.user).distinct()
-    except Deputy.DoesNotExist:
-        deputies = None
+    if not request.user.is_authenticated:
+        raise Http404("Страница не найдена")
 
+    context['user_info'] = {
+        'short_name': request.user.get_short_name(),
+        'full_name': request.user.get_full_name()
+    }
 
+    deputies = Deputy.objects.filter(appointment__user=request.user).distinct()
+
+    # AJAX-запрос (фильтрация записей)
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         filter_type = request.GET.get('filter', 'actual')
         status_filter = request.GET.get('status', 'all')
@@ -38,8 +38,7 @@ def priemka_lc_appointments(request):
             queryset = queryset.filter(is_archived=True)
         else:
             queryset = queryset.filter(is_archived=False)
-        
-        
+
         if status_filter != 'all':
             queryset = queryset.filter(appointment_status__id=int(status_filter))
 
@@ -48,7 +47,7 @@ def priemka_lc_appointments(request):
 
         if search_id:
             queryset = queryset.filter(id__startswith=search_id)
-        
+
         appointments_data = [
             {
                 'id': appointment.id,
@@ -64,23 +63,25 @@ def priemka_lc_appointments(request):
             }
             for appointment in queryset
         ]
-        
+
         return JsonResponse({'appointments': appointments_data})
-    
-    
+
+    # Обычный GET-запрос (рендеринг страницы)
     appointments = Appointment.objects.filter(user=request.user, is_archived=False)
     
     context['deputies'] = deputies
     context['appointments'] = appointments
     context['filter_type'] = 'actual'
-    # context['active_page'] = "appointments",
-    
+
     return render(request, 'priemka/priemka_lc_appointments.html', context)
 
 def priemka_lc_appointments_manage(request):
     context = {
         'active_page':'appointments_manage',
     }
+    
+    if not request.user.is_authenticated:
+        raise Http404("Страница не найдена")
     
     if request.user.is_authenticated:
         context['user_info'] = {
@@ -150,6 +151,9 @@ def priemka_lc_appointments_today_deputy(request):
         'active_page': 'appointments_today_deputy',
     }
     
+    if not request.user.is_authenticated:
+        raise Http404("Страница не найдена")
+    
     if request.user.is_authenticated:
         context['user_info'] = {
             'short_name': request.user.get_short_name(),
@@ -202,12 +206,12 @@ def priemka_lc_appointments_today_deputy(request):
         deputy=deputy,
         is_archived=False,
         appointment_status__id=2,
-        appointed_date=datetime.today().strftime('%Y-%d-%m')
+        appointed_date=datetime.today().strftime('%Y-%m-%d')
     ).order_by('appointed_time') if deputy else Appointment.objects.none()
 
     
     deputies = Deputy.objects.all()
-    users = User.objects.filter(appointment__isnull=False, appointment__appointed_date=datetime.today().strftime('%Y-%d-%m')).distinct()
+    users = User.objects.filter(appointment__isnull=False, appointment__appointed_date=datetime.today().strftime('%Y-%m-%d')).distinct()
 
     context['deputies'] = deputies
     context['appointments'] = appointments
@@ -222,6 +226,9 @@ def priemka_lc_appointments_deputy(request):
     context = {
         'active_page': 'appointments_deputy',
     }
+    
+    if not request.user.is_authenticated:
+        raise Http404("Страница не найдена")
     
     if request.user.is_authenticated:
         context['user_info'] = {
