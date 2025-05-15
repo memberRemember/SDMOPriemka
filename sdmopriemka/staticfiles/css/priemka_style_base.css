@@ -1,0 +1,55 @@
+html {
+    height: 100%;
+    width: 100%;
+}
+body  {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    height: 100%;
+    width: 100%;
+    background-color: #1a1b1f !important;
+    background-image: url(../img/topographic_10transparent_5000x.png) !important;
+    background: linear-gradient(#6c0619, #c20b2d 15%);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+::-webkit-scrollbar {
+    width: 3px;
+    background-color: transparent;
+ }
+
+
+::-webkit-scrollbar-thumb {
+    background: #ffffff70;
+    border-radius: 50px;
+  }
+
+main {
+    height: 100%;
+}
+
+.main-navbar-nav-scroll::-webkit-scrollbar {
+    width: 0px;
+ }
+
+.main-navbar-nav-scroll::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 0px;
+}
+
+
+.createuser_btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+}
+
+.btn-dark {
+    background-color: #ffffff;
+    color: black;
+}
+

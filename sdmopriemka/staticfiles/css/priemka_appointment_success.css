@@ -1,0 +1,140 @@
+.wrapper {
+    width: 100%;
+}
+.wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1000px;
+    backdrop-filter: blur(5px);
+    background: #21252982;
+    padding: 0px 50px 0px 50px;
+}
+
+.appointment-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* justify-content: center; */
+    background: #ffffff;
+
+    padding-top: 30px;
+    height: 100lvh;
+    width: 900px;
+    max-width: 900px;
+}
+
+.appointment-container .appointment-title {
+    font-size: 2rem;
+}
+
+.control-block-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+}
+
+.control-block-btns a {
+    text-decoration: none;
+}
+
+.control-block-btns .lc-button {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: auto;
+    padding: 12px;
+    color: #000;
+    background: transparent;
+    box-shadow: 0px 0px 0px 1px black inset;
+    transition: 150ms;
+}
+
+.control-block-btns .lc-button:hover {
+    transition: 150ms;
+    background: #131313;
+    color: #ffffff;
+}
+
+.control-block-btns .home-button {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: auto;
+    padding: 12px;
+    color: #ffffff;
+    background: #131313;
+    box-shadow: 0px 0px 0px 1px black inset;
+    transition: 150ms;
+}
+
+.control-block-btns .home-button:hover {
+    transition: 150ms;
+    background: #ffffff;
+    color: #131313;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.form-group #id_description {
+    max-height: 400px;
+}
+
+h1 {
+    color: #424649;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    max-width: 800px;
+}
+
+input {
+    width: 100%;
+}
+
+
+.helptext {
+    color: #00000071;
+}
+ul {
+    list-style: none; 
+    margin-left: 0;
+    margin-bottom: 0;
+}
+li {
+    margin: 0;
+}
+.errorlist {
+    color: red;
+    font-weight: 600;
+    padding: 0;
+}
+
+.alert
+{
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0 10px 0;
+    padding: 5px;
+    align-items: center;
+}
+
+.btn {
+    margin-bottom: 10px;
+}
+
+label {
+    margin-bottom: 10px;
+}

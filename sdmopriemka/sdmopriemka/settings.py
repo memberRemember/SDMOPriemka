@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -85,9 +86,9 @@ WSGI_APPLICATION = 'sdmopriemka.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'amvera-memberremember-cnpg-sdmodb-rw',  # 127.0.0.1 #localhost #db - docker
+        'HOST': 'amvera-memberremember-cnpg-sdmodb-rw',  # 127.0.0.1 #localhost #db - docker # amvera-memberremember-cnpg-sdmodb-rw
         'PORT': 5432,
-        'NAME': 'sdmopriemkadb',
+        'NAME': 'sdmopriemkadb', #sdmopriemkadb for amvera
         'USER': 'memberremember', # "postgres" for Windows
         'PASSWORD': '1504',
     }
@@ -140,6 +141,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'priemka/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'priemka/static'),
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
