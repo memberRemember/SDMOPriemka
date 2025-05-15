@@ -89,7 +89,7 @@ def priemka_index(request):
         if request.user.role.id == 3:
             return redirect('priemka_lc_appointments_deputy_page')
     
-    deputies = Deputy.objects.all().select_related('electoral_district')
+    deputies = Deputy.objects.all().select_related('electoral_district') if Deputy.objects.exists() else None
     context['deputies'] = deputies
     
     return render(request, 'priemka/priemka_index.html', context)
