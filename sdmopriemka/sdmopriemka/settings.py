@@ -25,9 +25,9 @@ SECRET_KEY = 'django-insecure-9amw(c%69w)h5an&sbhjv%y=dae_3k^-qzisgxtgvd-l96hhoz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0.2.2', 'host.docker.internal', '192.168.1.12', '0.0.0.0', 'sdmopriemka-memberremember.amvera.io',]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '10.0.2.2', 'host.docker.internal', '192.168.1.12', '0.0.0.0', 'sdmodb-memberremember.amvera.io',]
 
-CSRF_TRUSTED_ORIGINS = ['https://sdmopriemka-memberremember.amvera.io','http://sdmopriemka-memberremember.amvera.io',]
+CSRF_TRUSTED_ORIGINS = ['https://sdmodb-memberremember.amvera.io','http://sdmodb-memberremember.amvera.io',]
 
 
 # Application definition
@@ -87,7 +87,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'amvera-memberremember-cnpg-sdmodb-rw',  # 127.0.0.1 #localhost #db - docker
         'PORT': 5432,
-        'NAME': 'sdmopriemka',
+        'NAME': 'sdmopriemkadb',
         'USER': 'memberremember', # "postgres" for Windows
         'PASSWORD': '1504',
     }
