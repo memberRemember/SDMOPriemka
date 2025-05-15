@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'sdmopriemka.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'amvera-memberremember-cnpg-sdmopriemkadb-rw',  # 127.0.0.1 #localhost #db - docker
+        'HOST': 'amvera-memberremember-cnpg-sdmodb-rw',  # 127.0.0.1 #localhost #db - docker
         'PORT': 5432,
         'NAME': 'sdmopriemka',
         'USER': 'memberremember', # "postgres" for Windows
