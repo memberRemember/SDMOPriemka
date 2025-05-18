@@ -19,6 +19,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.pdfbase.pdfmetrics import registerFontFamily
 from reportlab.lib import colors
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -461,10 +462,22 @@ def priemka_lc_statistics(request):
     deputies = Deputy.objects.all()
 
     if request.GET.get('export') == 'pdf':
+        # font_path = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'timesnewromanpsmt.ttf')
         font_path = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'timesnewromanpsmt.ttf')
+        font_path_bold = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'timesnewromanbold.ttf')
+        font_path_italic = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'timesnewromanitalic.ttf')
+        font_path_bolditalic = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'timesnewromanbolditalic.ttf')
         print(f"Путь к шрифту: {font_path}")
         try:
             pdfmetrics.registerFont(TTFont('TimesNewRoman', font_path))
+            pdfmetrics.registerFont(TTFont('TimesNewRoman-Bold', font_path_bold))
+            pdfmetrics.registerFont(TTFont('TimesNewRoman-Italic', font_path_italic))
+            pdfmetrics.registerFont(TTFont('TimesNewRoman-BoldItalic', font_path_bolditalic))
+            registerFontFamily('TimesNewRoman',
+                normal='TimesNewRoman',
+                bold='TimesNewRoman-Bold',
+                italic='TimesNewRoman-Italic',
+                boldItalic='TimesNewRoman-BoldItalic')
             print("Шрифт успешно зарегистрирован")
         except Exception as e:
             print(f"Ошибка регистрации шрифта: {e}")
