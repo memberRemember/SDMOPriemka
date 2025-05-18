@@ -488,12 +488,12 @@ def priemka_lc_statistics(request):
         doc = SimpleDocTemplate(buffer, pagesize=A4)
         styles = getSampleStyleSheet()
 
-        styles['Normal'].fontName = 'DejaVuSerif'
-        # styles['Heading1'].fontName = 'DejaVuSerif'
-        # styles['Heading2'].fontName = 'DejaVuSerif'
+        styles['Normal'].fontName = 'Helvetica'
+        styles['Heading1'].fontName = 'Helvetica'
+        styles['Heading2'].fontName = 'Helvetica'
 
         table_style = [
-            ('FONT', (0, 0), (-1, -1), 'DejaVuSerif'),
+            ('FONT', (0, 0), (-1, -1), 'Helvetica'),
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('GRID', (0, 0), (-1, -1), 1, colors.black),
             ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
