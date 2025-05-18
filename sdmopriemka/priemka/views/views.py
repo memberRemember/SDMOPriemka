@@ -489,8 +489,8 @@ def priemka_lc_statistics(request):
         styles = getSampleStyleSheet()
 
         styles['Normal'].fontName = 'DejaVuSerif'
-        styles['Heading1'].fontName = 'DejaVuSerif'
-        styles['Heading2'].fontName = 'DejaVuSerif'
+        # styles['Heading1'].fontName = 'DejaVuSerif'
+        # styles['Heading2'].fontName = 'DejaVuSerif'
 
         table_style = [
             ('FONT', (0, 0), (-1, -1), 'DejaVuSerif'),
@@ -501,15 +501,23 @@ def priemka_lc_statistics(request):
         ]
 
         title_style = ParagraphStyle(
-            name='DejaVuStyle',
-            fontName='DejaVuSerif',
-            fontSize=14,
-            leading=16
+            'yourtitle',
+            fontName="Helvetica-Bold",
+            fontSize=16,
+            parent=styles['Heading2'],
+            alignment=1,
+            spaceAfter=14
         )
+        # title_style = ParagraphStyle(
+        #     name='DejaVuStyle',
+        #     fontName='DejaVuSerif',
+        #     fontSize=14,
+        #     leading=16
+        # )
 
         elements = []
         if not selected_deputy:
-            elements.append(Paragraph("Статистика за последние 30 дней", title_style))
+            elements.append(Paragraph("Статистика за последние 30 дней", ))
         else:
             elements.append(Paragraph(f"Статистика за последние 30 дней для депутата {selected_deputy.get_full_name()}", title_style))
         elements.append(Spacer(1, 12))
