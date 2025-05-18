@@ -462,23 +462,25 @@ def priemka_lc_statistics(request):
     deputies = Deputy.objects.all()
 
     if request.GET.get('export') == 'pdf':
-        # font_path = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'timesnewromanpsmt.ttf')
-        font_path = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'timesnewromanpsmt.ttf')
-        font_path_bold = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'timesnewromanbold.ttf')
-        font_path_italic = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'timesnewromanitalic.ttf')
-        font_path_bolditalic = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'timesnewromanbolditalic.ttf')
+        dejavu_dir = "/usr/share/fonts/truetype/dejavu"
+        font_path = os.path.join(dejavu_dir, "DejaVuSerif.ttf")
+        font_path_bold = os.path.join(dejavu_dir, "DejaVuSerif-Bold.ttf")
+        font_path_italic = os.path.join(dejavu_dir, "DejaVuSerif-Italic.ttf")
+        font_path_bolditalic = os.path.join(dejavu_dir, "DejaVuSerif-BoldItalic.ttf")
+
         print(f"Путь к шрифту: {font_path}")
         try:
-            pdfmetrics.registerFont(TTFont('TimesNewRoman', font_path))
-            pdfmetrics.registerFont(TTFont('TimesNewRoman-Bold', font_path_bold))
-            pdfmetrics.registerFont(TTFont('TimesNewRoman-Italic', font_path_italic))
-            pdfmetrics.registerFont(TTFont('TimesNewRoman-BoldItalic', font_path_bolditalic))
-            registerFontFamily('TimesNewRoman',
-                normal='TimesNewRoman',
-                bold='TimesNewRoman-Bold',
-                italic='TimesNewRoman-Italic',
-                boldItalic='TimesNewRoman-BoldItalic')
-            print("Шрифт успешно зарегистрирован")
+            pdfmetrics.registerFont(TTFont('DejaVuSerif', font_path))
+            pdfmetrics.registerFont(TTFont('DejaVuSerif-Bold', font_path_bold))
+            pdfmetrics.registerFont(TTFont('DejaVuSerif-Italic', font_path_italic))
+            pdfmetrics.registerFont(TTFont('DejaVuSerif-BoldItalic', font_path_bolditalic))
+
+            registerFontFamily('DejaVuSerif',
+                normal='DejaVuSerif',
+                bold='DejaVuSerif-Bold',
+                italic='DejaVuSerif-Italic',
+                boldItalic='DejaVuSerif-BoldItalic')
+            print("Шрифт DejaVuSerif успешно зарегистрирован")
         except Exception as e:
             print(f"Ошибка регистрации шрифта: {e}")
 
@@ -486,12 +488,13 @@ def priemka_lc_statistics(request):
         doc = SimpleDocTemplate(buffer, pagesize=A4)
         styles = getSampleStyleSheet()
 
-        styles['Normal'].fontName = 'TimesNewRoman'
-        styles['Heading1'].fontName = 'TimesNewRoman'
-        styles['Heading2'].fontName = 'TimesNewRoman'
+        # Установка семейства шрифтов
+        styles['Normal'].fontName = 'DejaVuSerif'
+        styles['Heading1'].fontName = 'DejaVuSerif'
+        styles['Heading2'].fontName = 'DejaVuSerif'
 
         table_style = [
-            ('FONT', (0, 0), (-1, -1), 'TimesNewRoman'),
+            ('FONT', (0, 0), (-1, -1), 'DejaVuSerif'),
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('GRID', (0, 0), (-1, -1), 1, colors.black),
             ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
@@ -499,14 +502,11 @@ def priemka_lc_statistics(request):
         ]
 
         elements = []
-        
-
         if not selected_deputy:
             elements.append(Paragraph("Статистика за последние 30 дней", styles['Heading1']))
         else:
             elements.append(Paragraph(f"Статистика за последние 30 дней для депутата {selected_deputy.get_full_name()}", styles['Heading1']))
         elements.append(Spacer(1, 12))
-
 
         elements.append(Paragraph("Статус обращений", styles['Heading2']))
         status_data = [
@@ -565,10 +565,10 @@ def priemka_lc_statistics(request):
             full_name_en = translit(full_name_ru, 'ru', reversed=True).replace(" ", "")
             filename = f"statistics_deputy-{full_name_en}_{current_date}.pdf"
 
-
         response = HttpResponse(pdf, content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         return response
+
    
     context = {
         'total_appointments': total_appointments,
