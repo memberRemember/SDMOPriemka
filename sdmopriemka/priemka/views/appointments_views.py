@@ -464,6 +464,7 @@ def update_appointment(appointment, data, status_id, request_user):
     if 'is_archived' in data:
         fields_to_update.append('is_archived')
 
+
     appointment.save(update_fields=fields_to_update)
 
 def get_appointment_context(appointment, user_info, form=None, error=None):
