@@ -500,11 +500,18 @@ def priemka_lc_statistics(request):
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ]
 
+        title_style = ParagraphStyle(
+            name='DejaVuStyle',
+            fontName='DejaVuSerif',
+            fontSize=14,
+            leading=16
+        )
+
         elements = []
         if not selected_deputy:
-            elements.append(Paragraph("Статистика за последние 30 дней", styles['Heading1']))
+            elements.append(Paragraph("Статистика за последние 30 дней", title_style))
         else:
-            elements.append(Paragraph(f"Статистика за последние 30 дней для депутата {selected_deputy.get_full_name()}", styles['Heading1']))
+            elements.append(Paragraph(f"Статистика за последние 30 дней для депутата {selected_deputy.get_full_name()}", title_style))
         elements.append(Spacer(1, 12))
 
         elements.append(Paragraph("Статус обращений", styles['Heading2']))
