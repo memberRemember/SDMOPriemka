@@ -462,11 +462,11 @@ def priemka_lc_statistics(request):
     deputies = Deputy.objects.all()
 
     if request.GET.get('export') == 'pdf':
-        dejavu_dir = "/usr/share/fonts/truetype/dejavu"
-        font_path = os.path.join(dejavu_dir, "DejaVuSerif.ttf")
-        font_path_bold = os.path.join(dejavu_dir, "DejaVuSerif-Bold.ttf")
-        font_path_italic = os.path.join(dejavu_dir, "DejaVuSerif-Italic.ttf")
-        font_path_bolditalic = os.path.join(dejavu_dir, "DejaVuSerif-BoldItalic.ttf")
+
+        font_path = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'DejaVuSerif.ttf')
+        font_path_bold = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'DejaVuSerif-Bold.ttf')
+        font_path_italic = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'DejaVuSerif-Italic.ttf')
+        font_path_bolditalic = os.path.join(os.path.dirname(__file__), 'static', 'fonts', 'DejaVuSerif-BoldItalic.ttf')
 
         print(f"Путь к шрифту: {font_path}")
         try:
@@ -488,7 +488,6 @@ def priemka_lc_statistics(request):
         doc = SimpleDocTemplate(buffer, pagesize=A4)
         styles = getSampleStyleSheet()
 
-        # Установка семейства шрифтов
         styles['Normal'].fontName = 'DejaVuSerif'
         styles['Heading1'].fontName = 'DejaVuSerif'
         styles['Heading2'].fontName = 'DejaVuSerif'
