@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from datetime import datetime, timedelta
 import re
 
@@ -557,3 +558,35 @@ class DecisionForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.appointment = appointment
         self.deputy = deputy
+
+class NameUpdateForm(forms.Form):
+    last_name = forms.CharField(
+        required=True,
+        validators=[
+            RegexValidator(
+                regex='^[a-zA-Zа-яА-ЯёЁ\s-]+$',
+                message='Фамилия может содержать только буквы, пробелы и дефисы',
+                code='invalid_last_name'
+            )
+        ]
+    )
+    first_name = forms.CharField(
+        required=True,
+        validators=[
+            RegexValidator(
+                regex='^[a-zA-Zа-яА-ЯёЁ\s-]+$',
+                message='Имя может содержать только буквы, пробелы и дефисы',
+                code='invalid_first_name'
+            )
+        ]
+    )
+    patronymic_name = forms.CharField(
+        required=False,
+        validators=[
+            RegexValidator(
+                regex='^[a-zA-Zа-яА-ЯёЁ-]+$',
+                message='Отчество должно содержать только буквы и дефис',
+                code='invalid_patronymic'
+            )
+        ]
+    )
