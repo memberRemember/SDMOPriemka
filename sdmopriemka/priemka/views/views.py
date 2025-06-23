@@ -695,14 +695,29 @@ def priemka_lc_settings(request):
                         'message': str(e)
                     }, status=400)
 
+        # if 'last_name' in request.POST:
+        #     user = request.user
+        #     user.last_name = request.POST.get('last_name', '')
+        #     user.first_name = request.POST.get('first_name', '')
+        #     user.patronymic_name = request.POST.get('patronymic_name', ' ')
+        #     user.save()
+        #     messages.success(request, 'ФИО успешно обновлены')
+        #     return redirect('priemka_lc_settings_page')
         if 'last_name' in request.POST:
-            user = request.user
-            user.last_name = request.POST.get('last_name', '')
-            user.first_name = request.POST.get('first_name', '')
-            user.patronymic_name = request.POST.get('patronymic_name', ' ')
-            user.save()
-            messages.success(request, 'ФИО успешно обновлены')
-            return redirect('priemka_lc_settings_page')
+            form = NameUpdateForm(request.POST)
+            if form.is_valid():
+                user = request.user
+                user.last_name = form.cleaned_data['last_name']
+                user.first_name = form.cleaned_data['first_name']
+                user.patronymic_name = form.cleaned_data['patronymic_name'] or ' '
+                user.save()
+                messages.success(request, 'ФИО успешно обновлены')
+                return redirect('priemka_lc_settings_page')
+            else:
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        messages.error(request, f'{field}: {error}')
+                return redirect('priemka_lc_settings_page')
     
     context = {
         'active_page': 'settings',

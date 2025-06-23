@@ -89,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'amvera-memberremember-cnpg-sdmodb-rw',  # 127.0.0.1 #localhost #db - docker # amvera-memberremember-cnpg-sdmodb-rw
         'PORT': 5432,
-        'NAME': 'sdmopriemkadb', #sdmopriemkadb for amvera
+        'NAME': 'sdmopriemkadb', #sdmopriemkadb for amvera #sdmopriemka for mac
         'USER': 'memberremember', # "postgres" for Windows
         'PASSWORD': '1504',
     }
@@ -152,6 +152,3 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# CSRF_COOKIE_SECURE = False
-# SESSION_COOKIE_SECURE = False
-# CSRF_COOKIE_HTTPONLY = False

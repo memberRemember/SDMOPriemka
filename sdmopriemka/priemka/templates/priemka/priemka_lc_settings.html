@@ -144,7 +144,7 @@
                     <h5 class="modal-title" id="editNameModalLabel">Изменить ФИО</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <!-- <div class="modal-body">
                     <form id="editNameForm" method="post" action="{% url 'priemka_lc_settings_page' %}">
                         {% csrf_token %}
                         <div class="mb-3">
@@ -160,6 +160,27 @@
                             <input type="text" class="form-control" id="patronymic_name" name="patronymic_name" value="{% if user.patronymic_name and user.patronymic_name != ' ' %}{{ user.patronymic_name }}{% endif %}">
                         </div>
                         <button type="submit" class="btn btn-dark">Сохранить</button>
+                    </form>
+                </div> -->
+                <div class="modal-body">
+                    <form id="editNameForm" method="post" action="{% url 'priemka_lc_settings_page' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label">Фамилия</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+                            <div class="invalid-feedback" id="last_name_error">Фамилия может содержать только буквы, пробелы, дефисы, и начинаться с заглавной буквы</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="first_name" class="form-label">Имя</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+                            <div class="invalid-feedback" id="first_name_error">Имя может содержать только буквы, пробелы, дефисы, и начинаться с заглавной буквы</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="patronymic_name" class="form-label">Отчество</label>
+                            <input type="text" class="form-control" id="patronymic_name" name="patronymic_name" value="{% if user.patronymic_name and user.patronymic_name != ' ' %}{{ user.patronymic_name }}{% endif %}">
+                            <div class="invalid-feedback" id="patronymic_name_error">Отчество может содержать только буквы, дефисы, и начинаться с заглавной буквы</div>
+                        </div>
+                        <button id="fio-submit-btn" type="submit" class="btn btn-dark">Сохранить</button>
                     </form>
                 </div>
             </div>
@@ -232,7 +253,6 @@
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
 
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const emailForm = document.getElementById('editEmailForm');
@@ -243,7 +263,6 @@
         const codeError = document.getElementById('codeError');
         const submitBtn = emailForm.querySelector('button[type="submit"]');
 
-        // Функция очистки ошибок
         function clearErrors() {
             emailField.classList.remove('is-invalid');
             emailError.textContent = '';
@@ -293,20 +312,18 @@
                 
                 switch(data.status) {
                     case 'success':
-                        // Успешное обновление - перезагружаем страницу
+
                         location.reload();
                         break;
                         
                     case 'code_required':
-                        // Показываем поле для кода
+
                         codeField.style.display = 'block';
-                        // Фокусируемся на поле ввода кода
                         codeInput.focus();
                         break;
                 }
             } catch (error) {
                 console.error('Error:', error);
-                // Для неожиданных ошибок
                 emailField.classList.add('is-invalid');
                 emailError.textContent = 'Произошла непредвиденная ошибка';
             } finally {
@@ -315,7 +332,7 @@
             }
         });
 
-        // Очищаем ошибки при изменении полей
+
         emailField.addEventListener('input', () => {
             emailField.classList.remove('is-invalid');
             emailError.textContent = '';
@@ -329,9 +346,99 @@
 </script>
 
 <script>
+    
+
     document.addEventListener('DOMContentLoaded', function() {
         const notificationSwitch = document.querySelector('.notification-switch');
+
+        function validateName(name) {
+
+            const basicCheck = /^[А-ЯЁA-Z][а-яёa-z-]{1,29}(?: [А-ЯЁA-Z][а-яёa-z-]{1,29})*$/.test(name);
+            
+            return basicCheck &&
+                !/--/.test(name) &&
+                !/- /.test(name) &&
+                !/ -/.test(name);
+        }
+
+        function validatePatronymic(patronymic) {
+            if (patronymic === '') return true;
+            
+            return /^[А-ЯЁA-Z][а-яёa-z-]{1,29}$/.test(patronymic) &&
+                !/--/.test(patronymic) &&
+                !patronymic.startsWith('-') &&
+                !patronymic.endsWith('-');
+        }
+ 
+        const nameFields = [
+            { 
+                field: document.getElementById('last_name'), 
+                error: document.getElementById('last_name_error'),
+                validator: validateName
+            },
+            { 
+                field: document.getElementById('first_name'), 
+                error: document.getElementById('first_name_error'),
+                validator: validateName
+            },
+            { 
+                field: document.getElementById('patronymic_name'), 
+                error: document.getElementById('patronymic_name_error'),
+                validator: validatePatronymic
+            }
+        ];
         
+        nameFields.forEach(item => {
+            if (item.field && item.error) {
+                item.error.style.display = 'none';
+                
+                item.field.addEventListener('input', function() {
+                    const isValid = item.validator(this.value);
+                    
+                    if (!isValid) {
+                        this.classList.add('is-invalid');
+                        item.error.style.display = 'block';
+                    } else {
+                        this.classList.remove('is-invalid');
+                        item.error.style.display = 'none';
+                    }
+                });
+
+                item.field.addEventListener('blur', function() {
+                    if (this.value === '') {
+                        this.classList.remove('is-invalid');
+                        item.error.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        // Валидация перед отправкой формы
+        const nameForm = document.getElementById('editNameForm');
+        if (nameForm) {
+            nameForm.addEventListener('submit', function(e) {
+                let isValid = true;
+                
+                nameFields.forEach(item => {
+                    if (item.field) {
+                        const fieldValue = item.field.value;
+                        const shouldValidate = item.field.id !== 'patronymic_name' || fieldValue !== '';
+                        
+                        if (shouldValidate && !item.validator(fieldValue)) {
+                            item.field.classList.add('is-invalid');
+                            if (item.error) item.error.style.display = 'block';
+                            isValid = false;
+                        }
+                    }
+                });
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    showToast('Проверьте правильность введенных данных', false);
+                }
+            });
+        }
+            
         if (notificationSwitch) {
             notificationSwitch.addEventListener('change', function() {
                 if (this.disabled) return;
@@ -355,11 +462,9 @@
                     if (data.status === 'success') {
                         showToast('Настройки уведомлений сохранены', true);
                         
-                        // Обновляем состояние переключателя на сервере
                         if (data.has_confirmed_email === false) {
                             this.checked = false;
                             this.disabled = true;
-                            // Можно добавить сообщение о необходимости подтвердить email
                         }
                     } else {
                         this.checked = !isChecked;
